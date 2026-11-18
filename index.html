@@ -6,7 +6,7 @@
 <title>SKYLATE</title>
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;background:#f0f2f5;padding-bottom:90px}
+body{margin:0;background:#f0f2f5;padding-bottom:90px;transition:.3s}
 .topbar{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;padding:14px 14px 10px;position:sticky;top:0;z-index:10}
 .topbar b{font-size:23px;letter-spacing:1px}
 .tabs{display:flex;gap:18px;margin-top:12px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
@@ -14,19 +14,17 @@ body{margin:0;background:#f0f2f5;padding-bottom:90px}
 .tabs button{background:none;border:none;color:#bfdbfe;font-weight:800;padding:6px 2px;cursor:pointer;font-size:14px;white-space:nowrap}
 .tabs button.active{color:#fff;border-bottom:3px solid #fff}
 .search{margin:12px;background:#fff;border-radius:20px;padding:12px 14px;display:flex;gap:8px;align-items:center;color:#777;box-shadow:0 1px 5px rgba(0,0,0,.05)}
-.card{background:#fff;border-radius:16px;margin:0 12px 14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.card{background:#fff;border-radius:16px;margin:0 12px 14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);transition:.3s}
 .flex{display:flex;gap:10px;align-items:center}
 img.av{width:44px;height:44px;border-radius:50%;object-fit:cover}
 img.post{width:100%;border-radius:14px;margin-top:10px;object-fit:cover;max-height:320px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
 .grid3 img{width:100%;height:110px;object-fit:cover;border-radius:10px}
-.pill{padding:8px 14px;border-radius:20px;border:1px solid #ddd;background:#fff;font-weight:700;cursor:pointer}
 .btn{width:100%;padding:13px;border:none;border-radius:12px;font-weight:800;cursor:pointer}
 .btn-grad{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff}
-.btn-blue{background:#2563eb;color:#fff}
 .btn-red{background:#e11d2e;color:#fff}
 .btn-grey{background:#eee}
-input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;margin:8px 0;font-size:15px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;margin:8px 0;font-size:15px;background:#fff}
 textarea{min-height:70px;resize:none}
 .upload{border:2px dashed #2563eb;border-radius:16px;padding:22px;text-align:center;background:#eff6ff}
 .filters{display:flex;gap:10px;overflow-x:auto;padding:6px 0}
@@ -44,7 +42,7 @@ input[type=range]{accent-color:#2563eb}
 .videoCard .ov{position:relative;z-index:2;padding:14px;width:100%;background:linear-gradient(transparent,rgba(0,0,0,.8))}
 .side{position:absolute;right:12px;top:38%;z-index:3;text-align:center;font-size:12px}
 .side div{font-size:26px;margin:8px 0 2px}
-.bottomNav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;align-items:center;padding:8px 0 12px;border-top:1px solid #eee;z-index:20}
+.bottomNav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;align-items:center;padding:8px 0 12px;border-top:1px solid #eee;z-index:20;transition:.3s}
 .bottomNav button{background:none;border:none;font-size:24px;cursor:pointer;color:#888}
 .bottomNav button.active{color:#2563eb}
 .plusBtn{background:linear-gradient(135deg,#2563eb,#1e40af)!important;color:#fff!important;width:48px!important;height:48px!important;border-radius:50%!important;margin-top:-18px!important;font-size:28px!important;box-shadow:0 4px 12px rgba(37,99,235,.4)}
@@ -52,15 +50,25 @@ input[type=range]{accent-color:#2563eb}
 .profileHeader{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;padding:18px 16px 28px;border-radius:0 0 24px 24px;text-align:center}
 .profilePic{width:112px;height:112px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.25)}
 .stat{text-align:center;flex:1}.stat b{font-size:18px}
-.statsCard{background:#fff;margin:-18px 14px 14px;padding:16px;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.08);display:flex}
+.statsCard{background:#fff;margin:-18px 14px 14px;padding:16px;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.08);display:flex;transition:.3s}
 .check{display:flex;gap:10px;align-items:center;margin:8px 0}
 .check input{width:20px;height:20px;flex-shrink:0;margin:0}
+.darkBtn{background:rgba(255,255,255,.2);border:none;color:#fff;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer}
+/* DARK MODE */
+body.dark{background:#0f172a;color:#e2e8f0}
+body.dark .card,body.dark .search,body.dark .statsCard,body.dark .bottomNav{background:#1e293b;color:#e2e8f0;box-shadow:none;border:1px solid #334155}
+body.dark input,body.dark select,body.dark textarea{background:#0f172a;color:#fff;border-color:#334155}
+body.dark .btn-grey{background:#334155;color:#fff}
+body.dark .music{background:#0f172a}
+body.dark .upload{background:#1e293b}
+body.dark .topbar{background:linear-gradient(135deg,#1e3a8a,#0f172a)}
+body.dark .profileHeader{background:linear-gradient(135deg,#1e3a8a,#0f172a)}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-<div class="flex" style="justify-content:space-between"><b>SKYLATE</b><span>⚙️ •••</span></div>
+<div class="flex" style="justify-content:space-between"><b>SKYLATE</b><div class="flex"><button class="darkBtn" id="darkBtn" onclick="toggleDark()">🌙</button><span>⚙️ •••</span></div></div>
 <div class="tabs">
 <button class="active" onclick="showTab('social',this)">SOCIAL</button>
 <button onclick="showTab('videos',this)">VIDEOS</button>
@@ -97,18 +105,14 @@ input[type=range]{accent-color:#2563eb}
 <b>🔥 Trending Music</b><span style="float:right;color:#2563eb;font-size:13px">See all</span>
 <div class="music">🔥<div><b>Kigali Vibes - Afrobeat mix</b><br><span style="font-size:12px;color:#888">Aline U. • 12.5k uses • 0:15</span></div><button onclick="selectMusic('Kigali Vibes')">+</button></div>
 <div class="music">🎵<div><b>Rwanda Sunset • Chill Lofi</b><br><span style="font-size:12px;color:#888">Davis K. • 9.2k uses • 0:30</span></div><button onclick="selectMusic('Rwanda Sunset')">+</button></div>
-<div class="music">🎵<div><b>Dance Wave • Trending</b><br><span style="font-size:12px;color:#888">Nina M. • 7.8k uses • 0:20</span></div><button onclick="selectMusic('Dance Wave')">+</button></div>
 <div class="flex"><span>🔊</span><input type="range" id="vol" min="0" max="100" value="60" oninput="document.getElementById('volTxt').innerText=this.value+'%'"><b id="volTxt">60%</b><span>🔇</span></div><p style="font-size:12px;color:#888;margin:0">Adjust music volume • <span id="chosenMusic">No music selected</span></p>
 <b>Recent</b><span style="float:right;font-size:12px">Select multiple</span>
 <div class="grid3"><img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=300"><img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=300"><img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300"><img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=300"><img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=300"></div>
 <div style="background:#f8f8f8;padding:12px;border-radius:12px;margin-top:10px"><span style="font-size:11px;color:#888">PREVIEW 👁️ Live Preview</span><div class="flex" style="margin-top:8px"><img class="av" src="https://i.pravatar.cc/100?img=47"><div><b>Aline U.</b><br><span style="font-size:12px;color:#888">Just now • Kigali, Rwanda</span></div></div><p style="font-size:13px">Vibes in Kigali with friends! 🎉 #Kigali #ExploreRwanda</p><img class="post" style="margin:0" src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800"></div>
-<b>Caption</b><textarea id="caption" placeholder="Write a caption... #Kigali #ExploreRwanda"></textarea>
-<b>Add to post</b>
+<b>Caption</b><textarea placeholder="Write a caption... #Kigali #ExploreRwanda"></textarea>
 <div class="flex" style="justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee">📍 <div style="flex:1;margin-left:8px"><b>Add Location</b><br><span style="font-size:12px;color:#888">Kigali, Rwanda</span></div> ›</div>
 <div class="flex" style="justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee"># <div style="flex:1;margin-left:8px"><b>Add Hashtags</b></div><span style="font-size:12px;color:#888">#Dance #Food ›</span></div>
-<div class="flex" style="justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee">👥 <div style="flex:1;margin-left:8px"><b>Tag People</b></div><span style="font-size:12px;color:#888">Tag friends ›</span></div>
 <div class="flex" style="justify-content:space-between;padding:10px 0">💬 <b>Allow comments</b><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
-<div class="flex" style="justify-content:space-between;padding:10px 0">💬 <b>Share to CHAT</b><div class="toggle off" onclick="this.classList.toggle('off')"></div></div>
 <button class="btn btn-grad" onclick="alert('✅ Post yashyizwe kuri SKYLATE!')">Post to SKYLATE 🚀</button>
 </div>
 </div>
@@ -126,8 +130,7 @@ input[type=range]{accent-color:#2563eb}
 </div>
 
 <div id="report" class="hidden">
-<div class="card"><h2>🚩 SKYLATE Report All</h2><p style="font-size:13px;color:#666">Report someone - Confidential</p><label><b>Who are you reporting?</b></label><select id="reportUser"><option value="">Select user...</option><option>Nina M.</option><option>Kevin R.</option><option>Eric T.</option><option>Aline U.</option><option>Other...</option></select><label><b>Reason:</b></label><div class="check"><input type="checkbox"> Harassment / Bullying</div><div class="check"><input type="checkbox"> Hateful content</div><div class="check"><input type="checkbox"> Spam / Scam</div><div class="check"><input type="checkbox"> Copyright / Stole my photo</div><div class="check"><input type="checkbox"> Other bad behavior</div><label><b>Describe what happened...</b></label><textarea id="reportDetails" placeholder="Andika ibyabaye neza..."></textarea><div style="background:#f0fff4;border:1px solid #22c55e;padding:12px;border-radius:12px"><div class="check"><input type="checkbox" checked><b>🕵️ Submit anonymously</b></div><p style="font-size:13px;color:#666;margin:0">Your identity will be hidden</p></div><div class="flex" style="margin-top:12px"><button class="btn btn-grey" style="flex:1">Cancel</button><button class="btn btn-red" style="flex:1" onclick="alert('✅ Report yoherejwe! Murakoze.')">Submit Report</button></div></div>
-<div class="card"><h3>🔒 Require permission to post others</h3><div class="flex"><img src="https://i.pravatar.cc/100?img=12" style="width:60px;height:60px;border-radius:12px;object-fit:cover"><div><b>Unauthorized Post by Nina M.</b><br><span style="font-size:13px;color:#666">Reposted without consent • flagged</span></div></div></div>
+<div class="card"><h2>🚩 SKYLATE Report All</h2><p style="font-size:13px;color:#666">Report someone - Confidential</p><label><b>Who are you reporting?</b></label><select><option>Select user...</option><option>Nina M.</option><option>Kevin R.</option><option>Eric T.</option><option>Aline U.</option><option>Other...</option></select><label><b>Reason:</b></label><div class="check"><input type="checkbox"> Harassment / Bullying</div><div class="check"><input type="checkbox"> Hateful content</div><div class="check"><input type="checkbox"> Spam / Scam</div><div class="check"><input type="checkbox"> Copyright / Stole my photo</div><div class="check"><input type="checkbox"> Other bad behavior</div><label><b>Describe what happened...</b></label><textarea placeholder="Andika ibyabaye neza..."></textarea><div style="background:#f0fff4;border:1px solid #22c55e;padding:12px;border-radius:12px"><div class="check"><input type="checkbox" checked><b>🕵️ Submit anonymously</b></div><p style="font-size:13px;color:#666;margin:0">Your identity will be hidden</p></div><div class="flex" style="margin-top:12px"><button class="btn btn-grey" style="flex:1">Cancel</button><button class="btn btn-red" style="flex:1" onclick="alert('✅ Report yoherejwe! Murakoze.')">Submit Report</button></div></div>
 </div>
 
 <div id="ownerLogin" class="card hidden"><h2>🔒 Secret Access</h2><input type="password" id="ownerPassword" placeholder="Secret Password"><button class="btn" style="background:#111;color:#fff" onclick="if(document.getElementById('ownerPassword').value==='SKYLATE2026'){document.getElementById('ownerLogin').classList.add('hidden');document.getElementById('ownerDashboard').classList.remove('hidden')}else{alert('Access Denied')}">Enter</button></div>
@@ -139,6 +142,8 @@ input[type=range]{accent-color:#2563eb}
 function showTab(id,btn){ ['social','videos','search','chat','create','profile','report'].forEach(x=>document.getElementById(x).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.bottomNav button').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); window.scrollTo(0,0); }
 function selectMusic(name){ document.getElementById('chosenMusic').innerText='Selected: '+name+' 🎵'; alert('🎵 '+name+' yatoranyijwe!'); }
 function previewFile(input){ if(input.files&&input.files[0]){ const r=new FileReader(); r.onload=e=>{ const im=document.getElementById('previewImg'); im.src=e.target.result; im.classList.remove('hidden'); }; r.readAsDataURL(input.files[0]); } }
+function toggleDark(){ document.body.classList.toggle('dark'); var isDark=document.body.classList.contains('dark'); document.getElementById('darkBtn').innerText=isDark?'☀️':'🌙'; try{localStorage.setItem('skylate_dark',isDark?'1':'0')}catch(e){} }
+try{ if(localStorage.getItem('skylate_dark')==='1'){ document.body.classList.add('dark'); document.getElementById('darkBtn').innerText='☀️'; } }catch(e){}
 document.addEventListener('keydown',e=>{ if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='s'){ e.preventDefault(); document.getElementById('ownerLogin').classList.remove('hidden'); window.scrollTo(0,document.body.scrollHeight); }});
 </script>
 </body>
