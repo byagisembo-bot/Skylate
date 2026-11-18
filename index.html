@@ -108,13 +108,33 @@ input[type=range]{accent-color:#2563eb}
 .followBtn.following{background:#e8f5e9;color:#22c55e;border:1px solid #22c55e}
 .followBtnSmall{background:#2563eb;color:#fff;border:none;padding:6px 12px;border-radius:16px;font-weight:800;font-size:11px;cursor:pointer}
 .followBtnSmall.following{background:#e8f5e9;color:#22c55e;border:1px solid #22c55e}
-/* PROFILE PHOTO */
 .profilePicWrap{position:relative;display:inline-block}
 .profilePicWrap .camBadge{position:absolute;bottom:6px;right:6px;background:#2563eb;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid #fff;font-size:14px;cursor:pointer}
 #photoModal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:95;display:none;align-items:flex-end;justify-content:center}
 #photoModal .sheet{background:#fff;border-radius:20px 20px 0 0;width:100%;padding:20px;padding-bottom:40px;text-align:center}
 #photoModal .sheet button{margin:6px 0}
 .myAvatar{border:2px solid #2563eb}
+.chatItem{display:flex;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #eee;cursor:pointer}
+.chatItem .onlineDot{position:absolute;bottom:2px;right:2px;width:12px;height:12px;background:#22c55e;border-radius:50%;border:2px solid #fff}
+.chatItem .avWrap{position:relative;flex-shrink:0}
+.unreadBadge{background:#e11d2e;color:#fff;font-size:11px;font-weight:800;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+#chatRoom{position:fixed;inset:0;background:#f0f2f5;z-index:100;display:none;flex-direction:column}
+#chatRoom .chatHead{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;padding:12px;display:flex;gap:10px;align-items:center}
+#chatRoom .chatBody{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:75%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.4}
+.msg.me{align-self:flex-end;background:#2563eb;color:#fff;border-bottom-right-radius:4px}
+.msg.them{align-self:flex-start;background:#fff;color:#333;border-bottom-left-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.msg small{display:block;font-size:10px;opacity:.7;margin-top:4px;text-align:right}
+.msg.them small{color:#888}
+#chatRoom .chatInput{background:#fff;padding:10px;display:flex;gap:8px;align-items:center;border-top:1px solid #eee}
+#chatRoom .chatInput input{margin:0;flex:1;background:#f0f2f5}
+#chatRoom .chatInput button{width:44px;height:44px;border-radius:50%;border:none;background:#2563eb;color:#fff;font-size:18px;cursor:pointer;flex-shrink:0}
+.typing{font-size:12px;color:#888;font-style:italic;padding:0 14px}
+/* SEARCH IKORA */
+.searchInput{flex:1;border:none;outline:none;padding:4px;font-size:15px;background:transparent;margin:0}
+.searchTag{display:inline-block;background:#eff6ff;color:#2563eb;padding:6px 12px;border-radius:16px;font-size:12px;font-weight:700;margin:4px;cursor:pointer}
+.searchTag.active{background:#2563eb;color:#fff}
+.searchResult{cursor:pointer}
 body.dark{background:#0f172a;color:#e2e8f0}
 body.dark .card,body.dark .search,body.dark .statsCard,body.dark .bottomNav{background:#1e293b;color:#e2e8f0;box-shadow:none;border:1px solid #334155}
 body.dark input,body.dark select,body.dark textarea{background:#0f172a;color:#fff;border-color:#334155}
@@ -130,6 +150,12 @@ body.dark #notifPanel .box{background:#1e293b;color:#e2e8f0}
 body.dark .notifItem{border-color:#334155}
 body.dark .notifItem.unread{background:#1e3a8a}
 body.dark #photoModal .sheet{background:#1e293b;color:#e2e8f0}
+body.dark #chatRoom{background:#0f172a}
+body.dark #chatRoom .chatInput{background:#1e293b;border-color:#334155}
+body.dark .msg.them{background:#1e293b;color:#e2e8f0}
+body.dark .chatItem{border-color:#334155}
+body.dark .searchTag{background:#1e3a8a;color:#e2e8f0}
+body.dark .searchInput{color:#fff}
 </style>
 </head>
 <body>
@@ -163,7 +189,6 @@ body.dark #photoModal .sheet{background:#1e293b;color:#e2e8f0}
 </div>
 </div>
 
-<!-- PROFILE PHOTO MODAL -->
 <div id="photoModal" onclick="if(event.target===this) closePhotoModal()">
 <div class="sheet">
 <img id="photoPreview" src="https://i.pravatar.cc/200?img=47" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #2563eb">
@@ -178,6 +203,13 @@ body.dark #photoModal .sheet{background:#1e293b;color:#e2e8f0}
 </div>
 </div>
 
+<div id="chatRoom">
+<div class="chatHead"><span style="font-size:22px;cursor:pointer" onclick="closeChat()">←</span><img id="chatHeadImg" src="" style="width:40px;height:40px;border-radius:50%;object-fit:cover"><div style="flex:1"><b id="chatHeadName">Davis K.</b><br><span style="font-size:12px;opacity:.85" id="chatHeadStatus">● Online • Active now</span></div><span style="font-size:20px">📞</span><span style="font-size:20px;margin-left:8px">📹</span></div>
+<div class="chatBody" id="chatBody"></div>
+<div class="typing hidden" id="typingTxt">Davis K. is typing...</div>
+<div class="chatInput"><span style="font-size:22px;cursor:pointer" onclick="alert('😊 Emoji picker - vuba!')">😊</span><span style="font-size:22px;cursor:pointer" onclick="alert('📎 Attach - vuba!')">📎</span><input id="chatInput" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendChat()"><button onclick="sendChat()">➤</button></div>
+</div>
+
 <div id="social">
 <div class="stories">
 <div class="story" onclick="showTab('create',null)"><div class="storyImg storyAdd"><img class="myAvatar" src="https://i.pravatar.cc/100?img=47"><b>+</b></div><span>Your Story</span></div>
@@ -186,13 +218,12 @@ body.dark #photoModal .sheet{background:#1e293b;color:#e2e8f0}
 <div class="story" onclick="openStory('Davis K.','https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800','Amazing view 🌄')"><div class="storyImg"><img src="https://i.pravatar.cc/100?img=32"></div><span>Davis K.</span></div>
 <div class="story" onclick="openStory('Nina M.','https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800','Food time! 😋')"><div class="storyImg"><img src="https://i.pravatar.cc/100?img=5"></div><span>Nina M.</span></div>
 </div>
-<div class="search">🔍 Search everything - people, videos, photos</div>
-<div class="card" style="background:#eff6ff"><b>👥 People you may know</b><div style="font-size:12px;color:#666">Kurikira abantu, ubone ibyabo</div>
+<div class="search" onclick="showTab('search',null);setTimeout(()=>document.getElementById('mainSearch').focus(),100)">🔍 <span style="color:#888">Search everything - people, videos, photos...</span></div>
+<div class="card" style="background:#eff6ff"><b>👥 People you may know</b>
 <div class="flex" style="margin-top:12px"><img class="av" src="https://i.pravatar.cc/100?img=32"><div style="flex:1"><b>Davis K.</b><br><span style="font-size:12px;color:#888">12 mutual friends • Kigali</span></div><button class="followBtn" data-user="Davis K." onclick="toggleFollow(this,'Davis K.')">Follow</button></div>
 <div class="flex" style="margin-top:12px"><img class="av" src="https://i.pravatar.cc/100?img=5"><div style="flex:1"><b>Nina M.</b><br><span style="font-size:12px;color:#888">8 mutual friends • Kigali</span></div><button class="followBtn" data-user="Nina M." onclick="toggleFollow(this,'Nina M.')">Follow</button></div>
 <div class="flex" style="margin-top:12px"><img class="av" src="https://i.pravatar.cc/100?img=68"><div style="flex:1"><b>Eric T.</b><br><span style="font-size:12px;color:#888">5 mutual friends • Musanze</span></div><button class="followBtn" data-user="Eric T." onclick="toggleFollow(this,'Eric T.')">Follow</button></div>
 </div>
-
 <div class="card">
 <div class="flex"><img class="av myAvatar" src="https://i.pravatar.cc/100?img=47"><div style="flex:1"><b>Aline U.</b><br><span style="font-size:12px;color:#888">Kigali, Rwanda • 2h ago 📍</span></div><button class="followBtnSmall" data-user="Aline U." onclick="toggleFollow(this,'Aline U.')">Follow</button></div>
 <img class="post" src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800">
@@ -212,7 +243,6 @@ body.dark #photoModal .sheet{background:#1e293b;color:#e2e8f0}
 <div class="commentInputRow"><img class="myAvatar" src="https://i.pravatar.cc/100?img=47" style="width:34px;height:34px;border-radius:50%;object-fit:cover"><input id="commentInput-1" placeholder="Andika comment yawe..."><button class="btn btn-grad" onclick="addComment(1)">Send</button></div>
 </div>
 </div>
-
 <div class="card">
 <div class="flex"><img class="av" src="https://i.pravatar.cc/100?img=12"><div style="flex:1"><b>Kevin R.</b><br><span style="font-size:12px;color:#888">Just discovered this amazing view! 🌄 #Kigali • 4h ago</span></div><button class="followBtnSmall" data-user="Kevin R." onclick="toggleFollow(this,'Kevin R.')">Follow</button></div>
 <img class="post" src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800">
@@ -258,15 +288,41 @@ body.dark #photoModal .sheet{background:#1e293b;color:#e2e8f0}
 </div>
 
 <div id="search" class="hidden">
-<div class="search">🔍 Search...</div>
-<div class="card"><b>People - <span id="followingCountTxt">0 Following</span></b>
-<div class="flex" style="margin-top:12px"><img class="av myAvatar" src="https://i.pravatar.cc/100?img=47"><div style="flex:1"><b>Aline U.</b><br><span style="font-size:12px;color:#888">@aline.u • 24.5K followers</span></div><button class="followBtn" data-user="Aline U." onclick="toggleFollow(this,'Aline U.')">Follow</button></div>
-<div class="flex" style="margin-top:12px"><img class="av" src="https://i.pravatar.cc/100?img=12"><div style="flex:1"><b>Kevin R.</b><br><span style="font-size:12px;color:#888">@kevin.rw • 12.3K followers</span></div><button class="followBtn" data-user="Kevin R." onclick="toggleFollow(this,'Kevin R.')">Follow</button></div>
-<div class="flex" style="margin-top:12px"><img class="av" src="https://i.pravatar.cc/100?img=32"><div style="flex:1"><b>Davis K.</b><br><span style="font-size:12px;color:#888">@davis.k • 8.9K followers</span></div><button class="followBtn" data-user="Davis K." onclick="toggleFollow(this,'Davis K.')">Follow</button></div>
-<div class="flex" style="margin-top:12px"><img class="av" src="https://i.pravatar.cc/100?img=5"><div style="flex:1"><b>Nina M.</b><br><span style="font-size:12px;color:#888">@nina.m • 15.2K followers</span></div><button class="followBtn" data-user="Nina M." onclick="toggleFollow(this,'Nina M.')">Follow</button></div>
-</div></div>
+<div class="search">🔍 <input class="searchInput" id="mainSearch" placeholder="Search people, posts, videos..." oninput="doSearch(this.value)"><span id="clearSearch" style="cursor:pointer;display:none" onclick="clearSearch()">✕</span></div>
+<div style="padding:0 12px 8px"><b style="font-size:13px">🔥 Trending:</b><br>
+<span class="searchTag" onclick="quickSearch('Kigali',this)">#Kigali</span>
+<span class="searchTag" onclick="quickSearch('Dance',this)">#Dance</span>
+<span class="searchTag" onclick="quickSearch('Food',this)">#Food</span>
+<span class="searchTag" onclick="quickSearch('Kevin',this)">Kevin</span>
+<span class="searchTag" onclick="quickSearch('Live',this)">🔴 Live</span>
+</div>
+<div id="searchResults"></div>
+<div id="searchDefault">
+<div class="card"><b>👥 People - <span id="followingCountTxt">0 Following</span></b>
+<div class="flex searchResult" style="margin-top:12px" data-search="Aline U. aline Kigali Creator Dance Food"><img class="av myAvatar" src="https://i.pravatar.cc/100?img=47"><div style="flex:1"><b>Aline U.</b><br><span style="font-size:12px;color:#888">@aline.u • 24.5K followers • Kigali</span></div><button class="followBtn" data-user="Aline U." onclick="toggleFollow(this,'Aline U.')">Follow</button></div>
+<div class="flex searchResult" style="margin-top:12px" data-search="Kevin R. kevin Kigali Dance"><img class="av" src="https://i.pravatar.cc/100?img=12"><div style="flex:1"><b>Kevin R.</b><br><span style="font-size:12px;color:#888">@kevin.rw • 12.3K followers • Kigali • Dance</span></div><button class="followBtn" data-user="Kevin R." onclick="toggleFollow(this,'Kevin R.')">Follow</button></div>
+<div class="flex searchResult" style="margin-top:12px" data-search="Davis K. davis Kigali"><img class="av" src="https://i.pravatar.cc/100?img=32"><div style="flex:1"><b>Davis K.</b><br><span style="font-size:12px;color:#888">@davis.k • 8.9K followers • Kigali</span></div><button class="followBtn" data-user="Davis K." onclick="toggleFollow(this,'Davis K.')">Follow</button></div>
+<div class="flex searchResult" style="margin-top:12px" data-search="Nina M. nina Kigali Food"><img class="av" src="https://i.pravatar.cc/100?img=5"><div style="flex:1"><b>Nina M.</b><br><span style="font-size:12px;color:#888">@nina.m • 15.2K followers • Kigali • Food</span></div><button class="followBtn" data-user="Nina M." onclick="toggleFollow(this,'Nina M.')">Follow</button></div>
+<div class="flex searchResult" style="margin-top:12px" data-search="Eric T. eric Musanze Music Beat"><img class="av" src="https://i.pravatar.cc/100?img=68"><div style="flex:1"><b>Eric T.</b><br><span style="font-size:12px;color:#888">@eric.t • 6.7K followers • Musanze • Music</span></div><button class="followBtn" data-user="Eric T." onclick="toggleFollow(this,'Eric T.')">Follow</button></div>
+</div>
+<div class="card"><b>🎬 Videos</b>
+<div class="searchResult" style="margin-top:10px" data-search="Dance challenge Kevin Kigali Dance" onclick="showTab('videos',null)"><img class="post" style="margin:0;height:140px" src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600"><b>Dance challenge - Kevin R.</b><br><span style="font-size:12px;color:#888">1.2k views • #Dance #Kigali</span></div>
+<div class="searchResult" style="margin-top:10px" data-search="Kigali Street Food Food Nina Kigali" onclick="showTab('videos',null)"><img class="post" style="margin:0;height:140px" src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600"><b>Kigali Street Food - Nina M.</b><br><span style="font-size:12px;color:#888">892 views • #Food #Kigali</span></div>
+</div>
+<div class="card"><b>🔴 Live Now</b>
+<div class="searchResult" style="margin-top:10px" data-search="Live Kevin Kigali Dance Live" onclick="joinLive('Kevin R.','Kigali dance challenge 🔥','https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800')"><b>🔴 Kevin R. - Kigali dance challenge</b><br><span style="font-size:12px;color:#888">1,248 watching</span></div>
+</div>
+</div>
+</div>
 
-<div id="chat" class="hidden"><div class="card"><b>Messages</b><div class="flex" style="margin-top:12px"><img class="av" src="https://i.pravatar.cc/100?img=32"><div><b>Davis K.</b><br><span style="font-size:13px;color:#888">Bro, that dance was 🔥</span></div><span style="margin-left:auto;font-size:12px;color:#888">2m</span></div><div class="flex" style="margin-top:12px"><img class="av" src="https://i.pravatar.cc/100?img=5"><div><b>Nina M.</b><br><span style="font-size:13px;color:#888">See you tomorrow in Kigali?</span></div><span style="margin-left:auto;font-size:12px;color:#888">1h</span></div></div></div>
+<div id="chat" class="hidden">
+<div class="card"><b>Messages</b> <span style="float:right;color:#2563eb;font-size:13px" onclick="alert('New Chat - hitamo umuntu muri Search!')">✏️ New Chat</span>
+<div class="chatItem" onclick="openChat('Davis K.','https://i.pravatar.cc/100?img=32')"><div class="avWrap"><img class="av" src="https://i.pravatar.cc/100?img=32"><span class="onlineDot"></span></div><div style="flex:1"><b>Davis K.</b><br><span style="font-size:13px;color:#888" id="last-Davis K.">Bro, that dance was 🔥</span></div><div style="text-align:right"><span style="font-size:12px;color:#888">2m</span><br><span class="unreadBadge" id="unread-Davis K.">2</span></div></div>
+<div class="chatItem" onclick="openChat('Nina M.','https://i.pravatar.cc/100?img=5')"><div class="avWrap"><img class="av" src="https://i.pravatar.cc/100?img=5"><span class="onlineDot"></span></div><div style="flex:1"><b>Nina M.</b><br><span style="font-size:13px;color:#888" id="last-Nina M.">See you tomorrow in Kigali?</span></div><div style="text-align:right"><span style="font-size:12px;color:#888">1h</span><br><span class="unreadBadge" id="unread-Nina M.">1</span></div></div>
+<div class="chatItem" onclick="openChat('Kevin R.','https://i.pravatar.cc/100?img=12')"><div class="avWrap"><img class="av" src="https://i.pravatar.cc/100?img=12"></div><div style="flex:1"><b>Kevin R.</b><br><span style="font-size:13px;color:#888" id="last-Kevin R.">Check my new video! 🔥</span></div><div style="text-align:right"><span style="font-size:12px;color:#888">3h</span></div></div>
+<div class="chatItem" onclick="openChat('Eric T.','https://i.pravatar.cc/100?img=68')"><div class="avWrap"><img class="av" src="https://i.pravatar.cc/100?img=68"></div><div style="flex:1"><b>Eric T.</b><br><span style="font-size:13px;color:#888" id="last-Eric T.">New beat is ready 🎵</span></div><div style="text-align:right"><span style="font-size:12px;color:#888">1d</span></div></div>
+</div>
+</div>
 
 <div id="create" class="hidden">
 <div class="card">
@@ -323,6 +379,21 @@ let myFollowingBase=892;
 let tempPhoto=null;
 let myPhoto='https://i.pravatar.cc/200?img=47';
 try{ myPhoto=localStorage.getItem('skylate_photo')||myPhoto; }catch(e){}
+let currentChat=null, currentChatImg='';
+let chatData={};
+try{ chatData=JSON.parse(localStorage.getItem('skylate_chats')||'{}'); }catch(e){ chatData={}; }
+let defaultChats={
+'Davis K.':[{who:'them',text:'Bro, that dance was 🔥',time:'2m ago'},{who:'them',text:'Uraza ejo muri Kigali?',time:'2m ago'}],
+'Nina M.':[{who:'them',text:'See you tomorrow in Kigali?',time:'1h ago'}],
+'Kevin R.':[{who:'them',text:'Check my new video! 🔥',time:'3h ago'}],
+'Eric T.':[{who:'them',text:'New beat is ready 🎵',time:'1d ago'}]
+};
+let chatReplies={
+'Davis K.':['Yego bro! 🔥','Ni byiza cyane!','Ejo turahura muri Kigali? 😊','Haha 😂','Urakoze!','Byiza! Tuzakora collab?'],
+'Nina M.':['Yego! Ndaje ejo 😊','Sawa!','Urakoze Nina ❤️','Tuzahura he?'],
+'Kevin R.':['Wow! Ndayireba ubu 🔥','Amazing bro!','Dance yawe ni 🔥🔥'],
+'Eric T.':['Beat ni 🔥🔥','Ndayikunda! 🎵','Ohereza full version!']
+};
 function showTab(id,btn){ ['social','videos','live','search','chat','create','profile','report'].forEach(x=>document.getElementById(x).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.bottomNav button').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); window.scrollTo(0,0); }
 function selectMusic(name){ document.getElementById('chosenMusic').innerText='Selected: '+name+' 🎵'; alert('🎵 '+name+' yatoranyijwe!'); }
 function previewFile(input){ if(input.files&&input.files[0]){ const r=new FileReader(); r.onload=e=>{ const im=document.getElementById('previewImg'); im.src=e.target.result; im.classList.remove('hidden'); }; r.readAsDataURL(input.files[0]); } }
@@ -362,28 +433,18 @@ function updateFollowUI(){
   else { listEl.innerHTML = [...followingSet].map(n=>'✅ '+n).join('<br>'); }
 }
 function followUser(el,name){ toggleFollow(el,name); }
-// PROFILE PHOTO - IKORA NYAYO
 function openPhotoModal(){ document.getElementById('photoPreview').src=myPhoto; document.getElementById('photoModal').style.display='flex'; }
 function closePhotoModal(){ document.getElementById('photoModal').style.display='none'; }
 function changeProfilePhoto(input){
   if(input.files && input.files[0]){
     var reader=new FileReader();
-    reader.onload=function(e){
-      tempPhoto=e.target.result;
-      document.getElementById('photoPreview').src=tempPhoto;
-      document.getElementById('profilePicMain').src=tempPhoto;
-      // preview everywhere instantly
-      document.querySelectorAll('.myAvatar').forEach(img=>img.src=tempPhoto);
-    };
+    reader.onload=function(e){ tempPhoto=e.target.result; document.getElementById('photoPreview').src=tempPhoto; document.getElementById('profilePicMain').src=tempPhoto; document.querySelectorAll('.myAvatar').forEach(img=>img.src=tempPhoto); };
     reader.readAsDataURL(input.files[0]);
   }
 }
 function saveProfilePhoto(){
   if(tempPhoto){ myPhoto=tempPhoto; try{ localStorage.setItem('skylate_photo', myPhoto); }catch(e){ alert('Ifoto nini cyane, gerageza ntoya'); } }
-  applyPhoto();
-  closePhotoModal();
-  addNotif('📸','Profile photo yawe yahindutse! 🎉','Just now');
-  alert('✅ Profile photo yahindutse!');
+  applyPhoto(); closePhotoModal(); addNotif('📸','Profile photo yawe yahindutse! 🎉','Just now'); alert('✅ Profile photo yahindutse!');
 }
 function removeProfilePhoto(){
   myPhoto='https://i.pravatar.cc/200?img=47'; tempPhoto=null;
@@ -404,10 +465,100 @@ function editName(){
   var n=prompt('Andika izina ryawe rishya:','Aline U.');
   if(n){ alert('✅ Izina ryahindutse riba: '+n); }
 }
+function getChat(name){ if(!chatData[name]){ chatData[name]=JSON.parse(JSON.stringify(defaultChats[name]||[])); } return chatData[name]; }
+function saveChats(){ try{ localStorage.setItem('skylate_chats', JSON.stringify(chatData)); }catch(e){} }
+function openChat(name,img){
+  currentChat=name; currentChatImg=img;
+  document.getElementById('chatHeadName').innerText=name;
+  document.getElementById('chatHeadImg').src=img;
+  document.getElementById('chatHeadStatus').innerText='● Online • Active now';
+  document.getElementById('typingTxt').innerText=name+' is typing...';
+  document.getElementById('typingTxt').classList.add('hidden');
+  renderChat();
+  document.getElementById('chatRoom').style.display='flex';
+  var ub=document.getElementById('unread-'+name); if(ub) ub.style.display='none';
+  document.getElementById('chatInput').focus();
+}
+function closeChat(){ document.getElementById('chatRoom').style.display='none'; currentChat=null; }
+function renderChat(){
+  var body=document.getElementById('chatBody'); body.innerHTML='';
+  getChat(currentChat).forEach(m=>{
+    var div=document.createElement('div'); div.className='msg '+(m.who==='me'?'me':'them');
+    div.innerHTML=m.text.replace(/</g,'&lt;')+'<small>'+(m.time||'Just now')+(m.who==='me'?' ✓✓':'')+'</small>';
+    body.appendChild(div);
+  });
+  body.scrollTop=body.scrollHeight;
+}
+function sendChat(){
+  var inp=document.getElementById('chatInput'); var text=inp.value.trim(); if(!text||!currentChat) return;
+  var msgs=getChat(currentChat);
+  msgs.push({who:'me',text:text,time:'Just now'}); saveChats(); renderChat(); inp.value='';
+  var lastEl=document.getElementById('last-'+currentChat); if(lastEl) lastEl.innerText='You: '+text;
+  setTimeout(()=>{ if(currentChat) document.getElementById('typingTxt').classList.remove('hidden'); },600);
+  setTimeout(()=>{
+    document.getElementById('typingTxt').classList.add('hidden');
+    if(!currentChat) return;
+    var replies=chatReplies[currentChat]||['Sawa! 😊','Yego!','Byiza!','Haha 😂'];
+    var reply=replies[Math.floor(Math.random()*replies.length)];
+    var low=text.toLowerCase();
+    if(low.includes('hello')||low.includes('muraho')||low.includes('hi')) reply='Muraho! 😊 Ukomeye?';
+    else if(low.includes('kigali')) reply='Kigali ni byiza! 🇷🇼 Turahura ejo?';
+    else if(low.includes('dance')||low.includes('video')) reply='Video yawe ni 🔥🔥 Ndayikunda!';
+    else if(low.includes('love')||low.includes('nkunda')) reply='Aww ❤️ Nanjye ndagukunda!';
+    else if(low.includes('?')) reply='Yego! Byiza cyane 😊';
+    getChat(currentChat).push({who:'them',text:reply,time:'Just now'}); saveChats(); renderChat();
+    var lastEl2=document.getElementById('last-'+currentChat); if(lastEl2) lastEl2.innerText=reply;
+    addNotif('💬', currentChat+' yagushubije: "'+reply.substring(0,30)+'"','Just now');
+  },2000);
+}
+// SEARCH IKORA NYAYO
+let searchHistory=[];
+try{ searchHistory=JSON.parse(localStorage.getItem('skylate_search')||'[]'); }catch(e){}
+function doSearch(q){
+  var query=q.trim().toLowerCase();
+  document.getElementById('clearSearch').style.display=query?'block':'none';
+  document.querySelectorAll('.searchTag').forEach(t=>t.classList.remove('active'));
+  var resultsDiv=document.getElementById('searchResults');
+  var def=document.getElementById('searchDefault');
+  if(!query){ resultsDiv.innerHTML=''; def.style.display='block'; return; }
+  def.style.display='none';
+  var all=document.querySelectorAll('#searchDefault .searchResult');
+  var found=[];
+  all.forEach(el=>{ var txt=(el.getAttribute('data-search')||el.innerText).toLowerCase(); if(txt.includes(query)) found.push(el); });
+  // Recent searches save
+  if(query.length>2 && !searchHistory.includes(query)){ searchHistory.unshift(query); searchHistory=searchHistory.slice(0,5); try{ localStorage.setItem('skylate_search',JSON.stringify(searchHistory)); }catch(e){} }
+  if(found.length===0){
+    resultsDiv.innerHTML='<div class="card" style="text-align:center;padding:30px"><div style="font-size:48px">🔍</div><h3>No results for "'+q.replace(/</g,'&lt;')+'"</h3><p style="font-size:13px;color:#888">Gerageza: Kigali, Kevin, Dance, Food, Live</p><button class="btn btn-grad" onclick="clearSearch()">Clear Search</button></div>';
+  } else {
+    var html='<div class="card"><b>✅ '+found.length+' results for "'+q.replace(/</g,'&lt;')+'"</b><div style="font-size:12px;color:#888">Kanda kuri result kugirango uyifungure</div></div>';
+    found.forEach(el=>{
+      var clone=el.cloneNode(true);
+      // fix follow buttons in clone to still work
+      html+='<div class="card">'+clone.outerHTML+'</div>';
+    });
+    resultsDiv.innerHTML=html;
+    // re-bind follow buttons in results
+    resultsDiv.querySelectorAll('.followBtn').forEach(b=>{ var u=b.getAttribute('data-user'); b.onclick=function(){ toggleFollow(this,u); }; if(followingSet.has(u)){ b.classList.add('following'); b.innerText='Following ✓'; } });
+  }
+}
+function quickSearch(term,el){
+  document.getElementById('mainSearch').value=term;
+  document.querySelectorAll('.searchTag').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+  doSearch(term);
+}
+function clearSearch(){
+  document.getElementById('mainSearch').value='';
+  document.getElementById('searchResults').innerHTML='';
+  document.getElementById('searchDefault').style.display='block';
+  document.getElementById('clearSearch').style.display='none';
+  document.querySelectorAll('.searchTag').forEach(t=>t.classList.remove('active'));
+}
 window.addEventListener('load',()=>{
   applyPhoto();
   try{ var bio=localStorage.getItem('skylate_bio'); if(bio){ document.getElementById('myBio').innerHTML=bio+' <span style="cursor:pointer" onclick="editBio()">✏️</span>'; } }catch(e){}
   updateFollowUI();
+  Object.keys(chatData).forEach(name=>{ var msgs=chatData[name]; if(msgs.length){ var last=msgs[msgs.length-1]; var el=document.getElementById('last-'+name); if(el) el.innerText=(last.who==='me'?'You: ':'')+last.text; } });
   [1,2].forEach(id=>{ try{ var saved=JSON.parse(localStorage.getItem('comments-'+id)||'[]'); var list=document.getElementById('commentList-'+id); saved.forEach(t=>{ var row=document.createElement('div'); row.className='commentRow'; row.innerHTML='<img src="'+myPhoto+'"><div class="commentBubble"><b>You (Aline U.)</b><br>'+t+'</div>'; list.appendChild(row); var cc=document.getElementById('commentCount-'+id); cc.innerText=parseInt(cc.innerText)+1; }); }catch(e){} });
 });
 document.addEventListener('keydown',e=>{ if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='s'){ e.preventDefault(); document.getElementById('ownerLogin').classList.remove('hidden'); window.scrollTo(0,document.body.scrollHeight); }});
