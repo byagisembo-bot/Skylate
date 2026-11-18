@@ -130,11 +130,15 @@ input[type=range]{accent-color:#2563eb}
 #chatRoom .chatInput input{margin:0;flex:1;background:#f0f2f5}
 #chatRoom .chatInput button{width:44px;height:44px;border-radius:50%;border:none;background:#2563eb;color:#fff;font-size:18px;cursor:pointer;flex-shrink:0}
 .typing{font-size:12px;color:#888;font-style:italic;padding:0 14px}
-/* SEARCH IKORA */
 .searchInput{flex:1;border:none;outline:none;padding:4px;font-size:15px;background:transparent;margin:0}
 .searchTag{display:inline-block;background:#eff6ff;color:#2563eb;padding:6px 12px;border-radius:16px;font-size:12px;font-weight:700;margin:4px;cursor:pointer}
 .searchTag.active{background:#2563eb;color:#fff}
 .searchResult{cursor:pointer}
+/* SETTINGS */
+.settingsBtn{background:rgba(255,255,255,.2);border:none;color:#fff;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer}
+.setRow{display:flex;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid #eee;cursor:pointer}
+.setRow .setIcon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.setRow:last-child{border-bottom:none}
 body.dark{background:#0f172a;color:#e2e8f0}
 body.dark .card,body.dark .search,body.dark .statsCard,body.dark .bottomNav{background:#1e293b;color:#e2e8f0;box-shadow:none;border:1px solid #334155}
 body.dark input,body.dark select,body.dark textarea{background:#0f172a;color:#fff;border-color:#334155}
@@ -156,12 +160,13 @@ body.dark .msg.them{background:#1e293b;color:#e2e8f0}
 body.dark .chatItem{border-color:#334155}
 body.dark .searchTag{background:#1e3a8a;color:#e2e8f0}
 body.dark .searchInput{color:#fff}
+body.dark .setRow{border-color:#334155}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-<div class="flex" style="justify-content:space-between"><b>SKYLATE</b><div class="flex"><button class="darkBtn" id="darkBtn" onclick="toggleDark()">🌙</button><button class="bellBtn" onclick="openNotif()">🔔<span class="bellBadge" id="bellBadge">3</span></button><span>⚙️ •••</span></div></div>
+<div class="flex" style="justify-content:space-between"><b>SKYLATE</b><div class="flex"><button class="darkBtn" id="darkBtn" onclick="toggleDark()">🌙</button><button class="bellBtn" onclick="openNotif()">🔔<span class="bellBadge" id="bellBadge">3</span></button><button class="settingsBtn" onclick="showTab('settings',null)">⚙️</button></div></div>
 <div class="tabs">
 <button class="active" onclick="showTab('social',this)">SOCIAL</button>
 <button onclick="showTab('videos',this)">VIDEOS</button>
@@ -170,6 +175,7 @@ body.dark .searchInput{color:#fff}
 <button onclick="showTab('chat',this)">CHAT</button>
 <button onclick="showTab('create',this)">+ CREATE</button>
 <button onclick="showTab('profile',this)">PROFILE</button>
+<button onclick="showTab('settings',this)">⚙️ SETTINGS</button>
 <button onclick="showTab('report',this)">🚩 REPORT</button>
 </div>
 </div>
@@ -260,6 +266,40 @@ body.dark .searchInput{color:#fff}
 <div class="commentInputRow"><img class="myAvatar" src="https://i.pravatar.cc/100?img=47" style="width:34px;height:34px;border-radius:50%;object-fit:cover"><input id="commentInput-2" placeholder="Andika comment yawe..."><button class="btn btn-grad" onclick="addComment(2)">Send</button></div>
 </div>
 </div>
+</div>
+
+<div id="settings" class="hidden">
+<div class="card">
+<div class="flex"><img class="myAvatar" src="https://i.pravatar.cc/100?img=47" style="width:56px;height:56px;border-radius:50%;object-fit:cover"><div style="flex:1"><b style="font-size:17px">Aline U.</b><br><span style="font-size:12px;color:#888">@aline.u • <span id="settingsBioShort">Creator • Kigali 🇷🇼</span></span></div><button class="btn btn-grad" style="width:auto;padding:8px 16px" onclick="showTab('profile',null)">View Profile</button></div>
+</div>
+<div class="card"><b>🎨 Appearance</b>
+<div class="setRow"><div class="setIcon" style="background:#1e293b;color:#fff">🌙</div><div style="flex:1"><b>Dark Mode</b><br><span style="font-size:12px;color:#888" id="darkStatus">Off - Light theme</span></div><div class="toggle" id="darkToggle" onclick="toggleDarkFromSettings()"></div></div>
+<div class="setRow"><div class="setIcon" style="background:#eff6ff">🌍</div><div style="flex:1"><b>Language</b><br><span style="font-size:12px;color:#888" id="langStatus">Kinyarwanda</span></div><span>›</span></div>
+<select id="langSelect" onchange="changeLanguage(this.value)"><option value="rw">🇷🇼 Kinyarwanda</option><option value="en">🇺🇸 English</option><option value="fr">🇫🇷 Français</option></select>
+</div>
+<div class="card"><b>🔔 Notifications & Privacy</b>
+<div class="setRow"><div class="setIcon" style="background:#fef3c7">🔔</div><div style="flex:1"><b>Push Notifications</b><br><span style="font-size:12px;color:#888" id="notifStatus">On - Receive all</span></div><div class="toggle" id="notifToggle" onclick="toggleSetting('notif',this)"></div></div>
+<div class="setRow"><div class="setIcon" style="background:#f0fdf4">🔒</div><div style="flex:1"><b>Private Account</b><br><span style="font-size:12px;color:#888" id="privateStatus">Off - Everyone can see</span></div><div class="toggle off" id="privateToggle" onclick="toggleSetting('private',this)"></div></div>
+<div class="setRow"><div class="setIcon" style="background:#fdf2f8">👁️</div><div style="flex:1"><b>Show Online Status</b><br><span style="font-size:12px;color:#888">Others can see you online</span></div><div class="toggle" id="onlineToggle" onclick="toggleSetting('online',this)"></div></div>
+<div class="setRow"><div class="setIcon" style="background:#eff6ff">💬</div><div style="flex:1"><b>Allow Comments</b><br><span style="font-size:12px;color:#888">Anyone can comment</span></div><div class="toggle" id="commentToggle" onclick="toggleSetting('comment',this)"></div></div>
+</div>
+<div class="card"><b>👤 Account</b>
+<div class="setRow" onclick="openPhotoModal()"><div class="setIcon" style="background:#eff6ff">📸</div><div style="flex:1"><b>Change Profile Photo</b><br><span style="font-size:12px;color:#888">Update your photo</span></div><span>›</span></div>
+<div class="setRow" onclick="editBio()"><div class="setIcon" style="background:#fef3c7">✏️</div><div style="flex:1"><b>Edit Bio</b><br><span style="font-size:12px;color:#888" id="bioSettings">Creator • Kigali 🇷🇼</span></div><span>›</span></div>
+<div class="setRow" onclick="editName()"><div class="setIcon" style="background:#f0fdf4">👤</div><div style="flex:1"><b>Edit Name</b><br><span style="font-size:12px;color:#888">Aline U.</span></div><span>›</span></div>
+<div class="setRow" onclick="changePassword()"><div class="setIcon" style="background:#fdf2f8">🔑</div><div style="flex:1"><b>Change Password</b><br><span style="font-size:12px;color:#888">Last changed 30 days ago</span></div><span>›</span></div>
+</div>
+<div class="card"><b>ℹ️ About</b>
+<div class="setRow"><div class="setIcon" style="background:#f0f2f5">📱</div><div style="flex:1"><b>SKYLATE Version</b><br><span style="font-size:12px;color:#888">v2.0 • Made in Rwanda 🇷🇼</span></div><span>›</span></div>
+<div class="setRow" onclick="alert('Privacy Policy: SKYLATE irinda amakuru yawe. Nta muntu ubona ibyawe utabihaye uburenganzira.')"><div class="setIcon" style="background:#eff6ff">📄</div><div style="flex:1"><b>Privacy Policy</b></div><span>›</span></div>
+<div class="setRow" onclick="alert('Help: Wandikire support@skylate.rw cyangwa uhamagare 0780 000 000')"><div class="setIcon" style="background:#fef3c7">❓</div><div style="flex:1"><b>Help & Support</b></div><span>›</span></div>
+</div>
+<div class="card">
+<button class="btn btn-grad" onclick="exportData()">📥 Download My Data</button>
+<button class="btn btn-grey" style="margin-top:10px" onclick="clearAllData()">🗑️ Clear All Data</button>
+<button class="btn btn-red" style="margin-top:10px" onclick="logoutUser()">🚪 Logout</button>
+</div>
+<p style="text-align:center;font-size:12px;color:#888;padding:0 14px">SKYLATE © 2026 • Made with ❤️ in Kigali, Rwanda</p>
 </div>
 
 <div id="live" class="hidden">
@@ -354,7 +394,7 @@ body.dark .searchInput{color:#fff}
 </div>
 <div class="statsCard"><div class="stat"><b>1,248</b><br><span style="font-size:12px;color:#888">Posts</span></div><div class="stat"><b id="myFollowers">24.5K</b><br><span style="font-size:12px;color:#888">Followers</span></div><div class="stat"><b id="myFollowing">892</b><br><span style="font-size:12px;color:#888">Following</span></div></div>
 <div class="flex" style="padding:0 14px"><button class="btn btn-grad" style="flex:1" onclick="openPhotoModal()">📸 Change Photo</button><button class="btn btn-grey" style="flex:1" onclick="editBio()">✏️ Edit Bio</button></div>
-<div class="flex" style="padding:10px 14px 0"><button class="btn btn-grey" style="flex:1" onclick="alert('Link yakopiwe! Share SKYLATE!')">Share Profile</button></div>
+<div class="flex" style="padding:10px 14px 0"><button class="btn btn-grey" style="flex:1" onclick="showTab('settings',null)">⚙️ Open Settings</button></div>
 <div class="card" style="margin-top:14px"><div class="flex" style="justify-content:space-around;border-bottom:2px solid #eee;padding-bottom:8px"><b style="color:#2563eb">POSTS</b><span style="color:#888">VIDEOS</span><span style="color:#888">LIKED</span></div><div class="grid3"><img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=300"><img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=300"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300"><img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300"><img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=300"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300"></div></div>
 <div class="card"><b>👥 Following - <span id="followingListCount">0</span></b><div id="followingList" style="font-size:13px;color:#888;margin-top:6px">Nta muntu urakurikira - Kanda Follow hejuru!</div></div>
 </div>
@@ -394,10 +434,13 @@ let chatReplies={
 'Kevin R.':['Wow! Ndayireba ubu 🔥','Amazing bro!','Dance yawe ni 🔥🔥'],
 'Eric T.':['Beat ni 🔥🔥','Ndayikunda! 🎵','Ohereza full version!']
 };
-function showTab(id,btn){ ['social','videos','live','search','chat','create','profile','report'].forEach(x=>document.getElementById(x).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.bottomNav button').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); window.scrollTo(0,0); }
+let settings={notif:true,private:false,online:true,comment:true,lang:'rw'};
+try{ settings=Object.assign(settings, JSON.parse(localStorage.getItem('skylate_settings')||'{}')); }catch(e){}
+function showTab(id,btn){ ['social','videos','live','search','chat','create','profile','settings','report'].forEach(x=>document.getElementById(x).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.bottomNav button').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); window.scrollTo(0,0); }
 function selectMusic(name){ document.getElementById('chosenMusic').innerText='Selected: '+name+' 🎵'; alert('🎵 '+name+' yatoranyijwe!'); }
 function previewFile(input){ if(input.files&&input.files[0]){ const r=new FileReader(); r.onload=e=>{ const im=document.getElementById('previewImg'); im.src=e.target.result; im.classList.remove('hidden'); }; r.readAsDataURL(input.files[0]); } }
-function toggleDark(){ document.body.classList.toggle('dark'); var isDark=document.body.classList.contains('dark'); document.getElementById('darkBtn').innerText=isDark?'☀️':'🌙'; try{localStorage.setItem('skylate_dark',isDark?'1':'0')}catch(e){} }
+function toggleDark(){ document.body.classList.toggle('dark'); var isDark=document.body.classList.contains('dark'); document.getElementById('darkBtn').innerText=isDark?'☀️':'🌙'; try{localStorage.setItem('skylate_dark',isDark?'1':'0')}catch(e){} updateSettingsUI(); }
+function toggleDarkFromSettings(){ toggleDark(); }
 try{ if(localStorage.getItem('skylate_dark')==='1'){ document.body.classList.add('dark'); document.getElementById('darkBtn').innerText='☀️'; } }catch(e){}
 function openStory(name,img,caption){ document.getElementById('storyUserName').innerText=name; document.getElementById('storyMainImg').src=img; document.getElementById('storyCaption').innerText=caption; document.getElementById('storyViewer').style.display='flex'; var bar=document.getElementById('storyBar'); bar.style.transition='none'; bar.style.width='0%'; setTimeout(()=>{ bar.style.transition='width 5s linear'; bar.style.width='100%'; },50); clearTimeout(storyTimer); storyTimer=setTimeout(closeStory,5000); }
 function closeStory(){ document.getElementById('storyViewer').style.display='none'; clearTimeout(storyTimer); }
@@ -410,11 +453,11 @@ function toggleLike(id,base,btn){ var liked=btn.classList.contains('liked'); var
 function addComment(id){ var inp=document.getElementById('commentInput-'+id); var text=inp.value.trim(); if(!text) return; var list=document.getElementById('commentList-'+id); var row=document.createElement('div'); row.className='commentRow'; row.innerHTML='<img src="'+myPhoto+'"><div class="commentBubble"><b>You (Aline U.)</b><br>'+text.replace(/</g,'&lt;')+'</div>'; list.appendChild(row); inp.value=''; var cc=document.getElementById('commentCount-'+id); cc.innerText=parseInt(cc.innerText)+1; addNotif('💬','Wagize comment: "'+text.substring(0,30)+'"','Just now'); try{ var saved=JSON.parse(localStorage.getItem('comments-'+id)||'[]'); saved.push(text); localStorage.setItem('comments-'+id,JSON.stringify(saved)); }catch(e){} }
 function sharePost(name){ alert('↗ Post ya '+name+' yoherejwe!'); }
 function savePost(btn){ if(btn.innerText==='🔖'){ btn.innerText='📌'; alert('📌 Post yabikwe!'); } else { btn.innerText='🔖'; } }
-function openNotif(){ document.getElementById('notifPanel').style.display='block'; }
+function openNotif(){ if(!settings.notif){ alert('🔕 Notifications zifunze muri Settings! Fungura uzibone.'); return; } document.getElementById('notifPanel').style.display='block'; }
 function closeNotif(){ document.getElementById('notifPanel').style.display='none'; }
 function markAllRead(){ document.querySelectorAll('.notifItem.unread').forEach(e=>{ e.classList.remove('unread'); var d=e.querySelector('.dotBlue'); if(d) d.remove(); }); notifCount=0; updateBell(); document.getElementById('unreadTxt').innerText='No new notifications'; }
-function updateBell(){ var b=document.getElementById('bellBadge'); if(notifCount<=0){ b.style.display='none'; } else { b.style.display='flex'; b.innerText=notifCount; } }
-function addNotif(icon,text,time){ var list=document.getElementById('notifList'); var div=document.createElement('div'); div.className='notifItem unread'; div.innerHTML='<div class="icon">'+icon+'</div><div style="flex:1"><b>SKYLATE</b> '+text+'<br><span style="font-size:12px;color:#888">• '+time+'</span></div><span class="dotBlue"></span>'; list.prepend(div); notifCount++; updateBell(); document.getElementById('unreadTxt').innerText=notifCount+' new notifications'; }
+function updateBell(){ var b=document.getElementById('bellBadge'); if(notifCount<=0||!settings.notif){ b.style.display='none'; } else { b.style.display='flex'; b.innerText=notifCount; } }
+function addNotif(icon,text,time){ if(!settings.notif && icon!=='⚙️') return; var list=document.getElementById('notifList'); var div=document.createElement('div'); div.className='notifItem unread'; div.innerHTML='<div class="icon">'+icon+'</div><div style="flex:1"><b>SKYLATE</b> '+text+'<br><span style="font-size:12px;color:#888">• '+time+'</span></div><span class="dotBlue"></span>'; list.prepend(div); notifCount++; updateBell(); document.getElementById('unreadTxt').innerText=notifCount+' new notifications'; }
 function toggleFollow(btn,name){
   var isFollowing = followingSet.has(name);
   if(isFollowing){ followingSet.delete(name); document.querySelectorAll('[data-user="'+name+'"]').forEach(b=>{ b.classList.remove('following'); b.innerText='Follow'; }); }
@@ -459,7 +502,7 @@ function applyPhoto(){
 function editBio(){
   var bio=document.getElementById('myBio');
   var n=prompt('Andika Bio nshya yawe:', bio.innerText.replace(' ✏️',''));
-  if(n){ bio.innerHTML=n+' <span style="cursor:pointer" onclick="editBio()">✏️</span>'; try{ localStorage.setItem('skylate_bio', n); }catch(e){} addNotif('✏️','Bio yawe yahindutse','Just now'); }
+  if(n){ bio.innerHTML=n+' <span style="cursor:pointer" onclick="editBio()">✏️</span>'; document.getElementById('bioSettings').innerText=n; document.getElementById('settingsBioShort').innerText=n; try{ localStorage.setItem('skylate_bio', n); }catch(e){} addNotif('✏️','Bio yawe yahindutse','Just now'); }
 }
 function editName(){
   var n=prompt('Andika izina ryawe rishya:','Aline U.');
@@ -471,7 +514,7 @@ function openChat(name,img){
   currentChat=name; currentChatImg=img;
   document.getElementById('chatHeadName').innerText=name;
   document.getElementById('chatHeadImg').src=img;
-  document.getElementById('chatHeadStatus').innerText='● Online • Active now';
+  document.getElementById('chatHeadStatus').innerText=settings.online?'● Online • Active now':'● Offline';
   document.getElementById('typingTxt').innerText=name+' is typing...';
   document.getElementById('typingTxt').classList.add('hidden');
   renderChat();
@@ -511,7 +554,6 @@ function sendChat(){
     addNotif('💬', currentChat+' yagushubije: "'+reply.substring(0,30)+'"','Just now');
   },2000);
 }
-// SEARCH IKORA NYAYO
 let searchHistory=[];
 try{ searchHistory=JSON.parse(localStorage.getItem('skylate_search')||'[]'); }catch(e){}
 function doSearch(q){
@@ -525,19 +567,13 @@ function doSearch(q){
   var all=document.querySelectorAll('#searchDefault .searchResult');
   var found=[];
   all.forEach(el=>{ var txt=(el.getAttribute('data-search')||el.innerText).toLowerCase(); if(txt.includes(query)) found.push(el); });
-  // Recent searches save
   if(query.length>2 && !searchHistory.includes(query)){ searchHistory.unshift(query); searchHistory=searchHistory.slice(0,5); try{ localStorage.setItem('skylate_search',JSON.stringify(searchHistory)); }catch(e){} }
   if(found.length===0){
     resultsDiv.innerHTML='<div class="card" style="text-align:center;padding:30px"><div style="font-size:48px">🔍</div><h3>No results for "'+q.replace(/</g,'&lt;')+'"</h3><p style="font-size:13px;color:#888">Gerageza: Kigali, Kevin, Dance, Food, Live</p><button class="btn btn-grad" onclick="clearSearch()">Clear Search</button></div>';
   } else {
     var html='<div class="card"><b>✅ '+found.length+' results for "'+q.replace(/</g,'&lt;')+'"</b><div style="font-size:12px;color:#888">Kanda kuri result kugirango uyifungure</div></div>';
-    found.forEach(el=>{
-      var clone=el.cloneNode(true);
-      // fix follow buttons in clone to still work
-      html+='<div class="card">'+clone.outerHTML+'</div>';
-    });
+    found.forEach(el=>{ var clone=el.cloneNode(true); html+='<div class="card">'+clone.outerHTML+'</div>'; });
     resultsDiv.innerHTML=html;
-    // re-bind follow buttons in results
     resultsDiv.querySelectorAll('.followBtn').forEach(b=>{ var u=b.getAttribute('data-user'); b.onclick=function(){ toggleFollow(this,u); }; if(followingSet.has(u)){ b.classList.add('following'); b.innerText='Following ✓'; } });
   }
 }
@@ -554,10 +590,60 @@ function clearSearch(){
   document.getElementById('clearSearch').style.display='none';
   document.querySelectorAll('.searchTag').forEach(t=>t.classList.remove('active'));
 }
+// SETTINGS - ZIKORA NYAYO
+function saveSettings(){ try{ localStorage.setItem('skylate_settings', JSON.stringify(settings)); }catch(e){} }
+function updateSettingsUI(){
+  var isDark=document.body.classList.contains('dark');
+  var dt=document.getElementById('darkToggle'); if(dt) dt.classList.toggle('off', !isDark);
+  document.getElementById('darkStatus').innerText=isDark?'On - Dark theme':'Off - Light theme';
+  document.getElementById('notifToggle').classList.toggle('off', !settings.notif);
+  document.getElementById('notifStatus').innerText=settings.notif?'On - Receive all':'Off - No notifications';
+  document.getElementById('privateToggle').classList.toggle('off', !settings.private);
+  document.getElementById('privateStatus').innerText=settings.private?'On - Only followers can see':'Off - Everyone can see';
+  document.getElementById('onlineToggle').classList.toggle('off', !settings.online);
+  document.getElementById('commentToggle').classList.toggle('off', !settings.comment);
+  document.getElementById('langSelect').value=settings.lang;
+  var langNames={rw:'Kinyarwanda',en:'English',fr:'Français'};
+  document.getElementById('langStatus').innerText=langNames[settings.lang]||'Kinyarwanda';
+  updateBell();
+}
+function toggleSetting(key,el){
+  settings[key]=!settings[key];
+  el.classList.toggle('off', !settings[key]);
+  saveSettings(); updateSettingsUI();
+  if(key==='private' && settings.private) alert('🔒 Account yawe ubu ni Private! Abantu bagomba gusaba kukukurikira.');
+  if(key==='notif' && !settings.notif) alert('🔕 Notifications zifunze! Ntuzongera kubona Notifications.');
+  if(key==='notif' && settings.notif) addNotif('⚙️','Notifications zafunguwe!','Just now');
+}
+function changeLanguage(lang){
+  settings.lang=lang; saveSettings(); updateSettingsUI();
+  var msgs={rw:'Ururimi rwahindutse ruba Kinyarwanda! 🇷🇼',en:'Language changed to English! 🇺🇸',fr:'Langue changée en Français! 🇫🇷'};
+  alert('🌍 '+msgs[lang]);
+}
+function changePassword(){
+  var oldP=prompt('Andika password ya kera:');
+  if(!oldP) return;
+  var newP=prompt('Andika password nshya:');
+  if(newP && newP.length>=4){ alert('✅ Password yahindutse!'); addNotif('🔑','Password yawe yahindutse','Just now'); }
+  else if(newP){ alert('Password igomba kuba nibura inyuguti 4'); }
+}
+function exportData(){
+  alert('📥 Data yawe: \n- Following: '+followingSet.size+' abantu\n- Chats: '+Object.keys(chatData).length+' conversations\n- Photo: '+(myPhoto.includes('pravatar')?'Default':'Custom')+'\n\nData izamanuka vuba!');
+  addNotif('📥','Wasabye Download My Data','Just now');
+}
+function clearAllData(){
+  if(!confirm('⚠️ Urashaka gusiba BYOSE? \n- Following\n- Chats\n- Comments\n- Photo\n- Settings\n\nIbi ntibisubirana!')) return;
+  try{ localStorage.removeItem('skylate_following'); localStorage.removeItem('skylate_chats'); localStorage.removeItem('skylate_photo'); localStorage.removeItem('skylate_bio'); localStorage.removeItem('skylate_settings'); localStorage.removeItem('comments-1'); localStorage.removeItem('comments-2'); }catch(e){}
+  alert('🗑️ Byose byasibwe! Page irongera gutangira...');
+  location.reload();
+}
+function logoutUser(){
+  if(confirm('Urashaka gusohoka muri SKYLATE?')){ alert('👋 Murabeho! Urakoze gukoresha SKYLATE!'); showTab('social',null); }
+}
 window.addEventListener('load',()=>{
   applyPhoto();
-  try{ var bio=localStorage.getItem('skylate_bio'); if(bio){ document.getElementById('myBio').innerHTML=bio+' <span style="cursor:pointer" onclick="editBio()">✏️</span>'; } }catch(e){}
-  updateFollowUI();
+  try{ var bio=localStorage.getItem('skylate_bio'); if(bio){ document.getElementById('myBio').innerHTML=bio+' <span style="cursor:pointer" onclick="editBio()">✏️</span>'; document.getElementById('bioSettings').innerText=bio; document.getElementById('settingsBioShort').innerText=bio; } }catch(e){}
+  updateFollowUI(); updateSettingsUI();
   Object.keys(chatData).forEach(name=>{ var msgs=chatData[name]; if(msgs.length){ var last=msgs[msgs.length-1]; var el=document.getElementById('last-'+name); if(el) el.innerText=(last.who==='me'?'You: ':'')+last.text; } });
   [1,2].forEach(id=>{ try{ var saved=JSON.parse(localStorage.getItem('comments-'+id)||'[]'); var list=document.getElementById('commentList-'+id); saved.forEach(t=>{ var row=document.createElement('div'); row.className='commentRow'; row.innerHTML='<img src="'+myPhoto+'"><div class="commentBubble"><b>You (Aline U.)</b><br>'+t+'</div>'; list.appendChild(row); var cc=document.getElementById('commentCount-'+id); cc.innerText=parseInt(cc.innerText)+1; }); }catch(e){} });
 });
