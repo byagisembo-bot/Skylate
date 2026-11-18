@@ -5,240 +5,139 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SKYLATE</title>
 <style>
-  *{box-sizing:border-box;font-family:Arial,sans-serif}
-  body{margin:0;background:#f0f2f5;padding:12px}
-  .card{background:#fff;border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
-  .top{display:flex;justify-content:space-between;align-items:center}
-  .logo{font-weight:900;font-size:22px}
-  .logo span{color:#6a00ff}
-  input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin:8px 0;font-size:15px}
-  textarea{min-height:80px;resize:none}
-  .btn{width:100%;padding:13px;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-size:15px}
-  .btn-red{background:#e11d2e;color:#fff}
-  .btn-dark{background:#111;color:#fff}
-  .btn-grey{background:#eee}
-  .row{display:flex;gap:10px}
-  .badge{background:#ffe9e9;color:#c00;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:800}
-  .flex{display:flex;gap:12px;align-items:center}
-  img{width:70px;height:70px;object-fit:cover;border-radius:14px}
-  .small{font-size:13px;color:#666}
-  .check{display:flex;gap:8px;align-items:center;margin:6px 0}
-  .hidden{display:none!important}
-  .stat{background:#f7f7ff;border-radius:12px;padding:12px;text-align:center;flex:1}
-  .stat b{font-size:20px}
-  .secret-top{background:#111;color:#fff;border-radius:14px;padding:16px}
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f0f2f5;padding-bottom:80px}
+.topbar{background:linear-gradient(90deg,#3b82f6,#a855f7);color:#fff;padding:14px 14px 10px;position:sticky;top:0;z-index:10}
+.topbar b{font-size:22px;letter-spacing:1px}
+.tabs{display:flex;gap:16px;margin-top:12px;overflow-x:auto}
+.tabs button{background:none;border:none;color:#ddd;font-weight:800;padding:6px 2px;cursor:pointer;font-size:14px;white-space:nowrap}
+.tabs button.active{color:#fff;border-bottom:3px solid #fff}
+.search{margin:12px;background:#fff;border-radius:20px;padding:11px 14px;display:flex;gap:8px;align-items:center;color:#777}
+.card{background:#fff;border-radius:16px;margin:0 12px 14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.flex{display:flex;gap:10px;align-items:center}
+img.av{width:44px;height:44px;border-radius:50%;object-fit:cover}
+img.post{width:100%;border-radius:14px;margin-top:10px;object-fit:cover;max-height:320px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+.grid3 img{width:100%;height:110px;object-fit:cover;border-radius:10px}
+.pill{padding:8px 14px;border-radius:20px;border:1px solid #ddd;background:#fff;font-weight:700;cursor:pointer}
+.pill.on{background:#2563eb;color:#fff;border-color:#2563eb}
+.btn{width:100%;padding:13px;border:none;border-radius:12px;font-weight:800;cursor:pointer}
+.btn-grad{background:linear-gradient(90deg,#3b82f6,#a855f7);color:#fff}
+.btn-red{background:#e11d2e;color:#fff}
+.btn-grey{background:#eee}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;margin:8px 0;font-size:15px}
+textarea{min-height:70px;resize:none}
+.upload{border:2px dashed #a855f7;border-radius:16px;padding:22px;text-align:center;background:#faf5ff}
+.filters{display:flex;gap:10px;overflow-x:auto;padding:6px 0}
+.filters div{text-align:center;flex-shrink:0}
+.filters img{width:68px;height:68px;object-fit:cover;border-radius:12px}
+.filters span{font-size:11px}
+.music{display:flex;align-items:center;gap:10px;background:#f8f8f8;border-radius:12px;padding:10px;margin:8px 0}
+.music button{margin-left:auto;width:32px;height:32px;border-radius:50%;border:1px solid #ddd;background:#fff;font-size:18px}
+input[type=range]{accent-color:#a855f7}
+.toggle{width:44px;height:24px;background:#22c55e;border-radius:20px;position:relative;flex-shrink:0}
+.toggle:after{content:"";position:absolute;right:3px;top:3px;width:18px;height:18px;background:#fff;border-radius:50%}
+.toggle.off{background:#ccc}.toggle.off:after{left:3px;right:auto}
+.videoCard{margin:0 12px 14px;border-radius:18px;overflow:hidden;position:relative;background:#000;color:#fff;min-height:480px;display:flex;align-items:flex-end}
+.videoCard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.videoCard .ov{position:relative;z-index:2;padding:14px;width:100%;background:linear-gradient(transparent,rgba(0,0,0,.8))}
+.side{position:absolute;right:12px;top:38%;z-index:3;text-align:center;font-size:12px}
+.side div{font-size:26px;margin:8px 0 2px}
+.bottomNav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px 0 14px;border-top:1px solid #eee;z-index:20}
+.bottomNav button{background:none;border:none;font-size:24px;cursor:pointer}
+.bottomNav button.active{color:#a855f7}
+.hidden{display:none!important}
+.profilePic{width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.stat{text-align:center;flex:1}.stat b{font-size:18px}
+.check{display:flex;gap:10px;align-items:center;margin:8px 0}
+.check input{width:20px;height:20px;flex-shrink:0;margin:0}
+.badge{background:#ffe9e9;color:#c00;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:800}
 </style>
 </head>
 <body>
 
-<!-- ===== USER VIEW ===== -->
-<div id="userView">
-  <div class="card top"><div class="logo">SKY<span>LATE</span></div><div class="badge">🌍 Global • All Countries</div></div>
-
-  <div class="card">
-    <h3>🔒 Require permission to post others</h3>
-    <p class="small">Control who can post content on behalf of others without permission.</p>
-    <div class="flex"><img src="https://i.pravatar.cc/100?img=12"><div><b>Unauthorized Post by Nina M.</b><br><span class="small">Reposted without consent • flagged by system</span></div></div>
-  </div>
-
-  <!-- ===== REPORT FORM ===== -->
-  <div class="card">
-    <h2>🚩 SKYLATE Report All</h2>
-    <p class="small">Report someone for bad behavior - Confidential</p>
-    <label><b>Who are you reporting?</b></label>
-    <select id="reportUser">
-      <option value="">Select user...</option>
-      <option>Nina M.</option><option>Kevin R.</option><option>Eric T.</option><option>Aline U.</option><option>Other...</option>
-    </select>
-    <label><b>Reason:</b></label>
-    <div class="check"><input type="checkbox" id="r1"> Harassment / Bullying</div>
-    <div class="check"><input type="checkbox" id="r2"> Hateful content</div>
-    <div class="check"><input type="checkbox" id="r3"> Spam / Scam</div>
-    <div class="check"><input type="checkbox" id="r4"> Copyright / Stole my photo</div>
-    <div class="check"><input type="checkbox" id="r5"> Other bad behavior</div>
-    <label><b>Describe what happened...</b></label>
-    <textarea id="reportDetails" placeholder="Andika ibyabaye neza..."></textarea>
-    <label><b>Proof (optional)</b></label>
-    <input type="text" id="reportProof" placeholder="Paste link">
-    <div class="card" style="background:#f0fff4;border:1px solid #22c55e">
-      <div class="check"><input type="checkbox" id="anonymous" checked><b>🕵️ Submit anonymously</b></div>
-      <p class="small" style="margin:0">Your identity will be hidden - Nta muntu uzamenya ko ari wowe.</p>
-    </div>
-    <div class="row"><button class="btn btn-grey" onclick="clearReport()">Cancel</button><button class="btn btn-red" id="submitBtn" onclick="submitReport()">Submit Report to SKYLATE</button></div>
-    <p id="reportMsg" style="text-align:center;font-weight:800;color:green"></p>
-  </div>
-  <p style="text-align:center" class="small">SKYLATE • Made for the world 🌍</p>
+<!-- TOP -->
+<div class="topbar">
+<div class="flex" style="justify-content:space-between"><b>SKYLATE</b><span>⚙️ •••</span></div>
+<div class="tabs">
+<button class="active" onclick="showTab('social',this)">SOCIAL</button>
+<button onclick="showTab('videos',this)">VIDEOS</button>
+<button onclick="showTab('search',this)">SEARCH</button>
+<button onclick="showTab('chat',this)">CHAT</button>
+<button onclick="showTab('create',this)">+ CREATE</button>
+<button onclick="showTab('profile',this)">PROFILE</button>
+<button onclick="showTab('report',this)">🚩 REPORT</button>
+</div>
 </div>
 
-<!-- ===== SECRET OWNER LOGIN ===== -->
-<div id="ownerLogin" class="card hidden">
-  <h2>🔒 SKYLATE - Secret Access</h2>
-  <p class="small">Owner Only - Nta muntu wundi ubizi</p>
-  <input type="text" id="ownerUsername" placeholder="Secret Username">
-  <input type="password" id="ownerPassword" placeholder="Secret Password">
-  <button class="btn btn-dark" onclick="ownerLogin()">Enter Secret Dashboard</button>
-  <p id="ownerError" style="color:red;text-align:center"></p>
+<!-- SOCIAL -->
+<div id="social">
+<div class="search">🔍 Search everything - people, videos, photos</div>
+<div class="card"><div class="flex"><img class="av" src="https://i.pravatar.cc/100?img=47"><div><b>Aline U.</b><br><span style="font-size:12px;color:#888">Kigali, Rwanda • 2h ago 📍</span></div></div><img class="post" src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800"><p>Vibes in Kigali with friends! ❤️ #Kigali #ExploreRwanda</p><div class="flex" style="gap:18px">❤️ 124 💬 23 ↗ Share 🔖</div></div>
+<div class="card"><b>🔥 Trending Videos</b><div class="flex" style="margin-top:10px"><div style="flex:1"><img class="post" style="margin:0" src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600"><br><b>Dance challenge</b><br><span style="font-size:12px;color:#888">1.2k views • 15m ago</span></div><div style="flex:1"><img class="post" style="margin:0" src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600"><br><b>Kigali Street Food</b><br><span style="font-size:12px;color:#888">892 views • 1h ago</span></div></div></div>
+<div class="card"><div class="flex"><img class="av" src="https://i.pravatar.cc/100?img=12"><div><b>Kevin R.</b><br><span style="font-size:12px;color:#888">Just discovered this amazing view! 🌄 #Kigali • 4h ago</span></div></div><img class="post" src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800"><div class="flex" style="gap:18px">❤️ 89 💬 12 ↗ Share</div></div>
 </div>
 
-<!-- ===== SECRET OWNER DASHBOARD ===== -->
-<div id="ownerDashboard" class="hidden">
-  <div class="secret-top"><h2 style="margin:0">🔐 Secret Overview</h2><p style="margin:4px 0 0">All Reports, Copyrights & Flagged Posts</p><p style="margin:8px 0 0"><span class="badge">Private • Owner Only • Hidden from users</span></p></div>
-  <div class="card"><div class="row">
-    <div class="stat"><span class="small">Total Reports</span><br><b id="statReports">0</b></div>
-    <div class="stat"><span class="small">Copyright</span><br><b id="statCopyright">0</b></div>
-    <div class="stat"><span class="small">Anonymous</span><br><b id="statAnon">0</b></div>
-  </div></div>
-  <div class="card"><h3>📥 Live Reports from Firebase</h3><div id="reportsList"><p class="small">Loading...</p></div></div>
-  <button class="btn btn-grey" onclick="ownerLogout()">Logout Secret Dashboard</button>
+<!-- VIDEOS - TIKTOK STYLE -->
+<div id="videos" class="hidden">
+<div class="videoCard"><img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800"><div class="side"><div>💜</div>1.2k<div>💬</div>142<div>↗</div>38<div>🔖</div>27</div><div class="ov"><div style="background:rgba(0,0,0,.6);padding:8px;border-radius:10px;margin-bottom:8px">💬 Live Comments • 28 live<br><b>Aline U.:</b> This is fire 🔥<br><b>Davis K.:</b> Kigali represent! 🇷🇼</div><b>@kevin.rw</b><br>Kigali dance challenge 🔥 #DanceChallenge #Kigali<br>🎵 Original sound - kevin.rw • trending now</div></div>
 </div>
 
-<!-- ===== FIREBASE SDK ===== -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<!-- SEARCH -->
+<div id="search" class="hidden"><div class="search">🔍 Search...</div><div class="card"><b>People</b><div class="flex" style="margin-top:10px"><img class="av" src="https://i.pravatar.cc/100?img=47"><b>Aline U.</b><span style="margin-left:auto;color:#a855f7">Follow</span></div><div class="flex" style="margin-top:10px"><img class="av" src="https://i.pravatar.cc/100?img=12"><b>Kevin R.</b><span style="margin-left:auto;color:#a855f7">Follow</span></div></div></div>
 
-// ================= 1. SHYIRAMO CONFIG YAWE HANO =================
-// Genda: console.firebase.google.com -> Create Project -> Web App -> Copy config
-const firebaseConfig = {
-  apiKey: "SHYIRAMO_API_KEY_YAWE_HANO",
-  authDomain: "skylate-app.firebaseapp.com",
-  projectId: "skylate-app",
-  storageBucket: "skylate-app.appspot.com",
-  messagingSenderId: "000000000000",
-  appId: "1:000000000000:web:xxxxxxxx"
-};
+<!-- CHAT -->
+<div id="chat" class="hidden"><div class="card"><b>Messages</b><div class="flex" style="margin-top:12px"><img class="av" src="https://i.pravatar.cc/100?img=32"><div><b>Davis K.</b><br><span style="font-size:13px;color:#888">Bro, that dance was 🔥</span></div><span style="margin-left:auto;font-size:12px;color:#888">2m</span></div><div class="flex" style="margin-top:12px"><img class="av" src="https://i.pravatar.cc/100?img=5"><div><b>Nina M.</b><br><span style="font-size:13px;color:#888">See you tomorrow in Kigali?</span></div><span style="margin-left:auto;font-size:12px;color:#888">1h</span></div></div></div>
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+<!-- CREATE POST - NKIYO WANYEREKAGA -->
+<div id="create" class="hidden">
+<div class="card">
+<div class="flex" style="justify-content:space-between"><span>←</span><b style="font-size:18px">Create Post</b><span style="background:#dbeafe;padding:6px 14px;border-radius:14px;color:#2563eb;font-weight:800">Post</span></div>
+<div class="flex" style="justify-content:center;gap:30px;margin:14px 0"><b style="color:#2563eb;border-bottom:3px solid #2563eb;padding-bottom:4px">PHOTO</b><b style="color:#888">VIDEO</b></div>
+<div class="upload" onclick="document.getElementById('fileInput').click()"><div style="font-size:36px;background:#dbeafe;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto">+</div><b>Tap to upload photo or video</b><br><span style="font-size:13px;color:#666">Add photos from your gallery or record a new video</span><input type="file" id="fileInput" accept="image/*,video/*" style="display:none" onchange="previewFile(this)"><img id="previewImg" class="post hidden"></div>
+<b>Filters</b><span style="float:right;color:#3b82f6;font-size:13px">See all</span>
+<div class="filters"><div><img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=200"><br><span>Original • Selected</span></div><div><img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=200" style="filter:saturate(1.8)"><br><span>Vivid</span></div><div><img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=200" style="filter:hue-rotate(180deg)"><br><span>Cool</span></div><div><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200" style="filter:sepia(.5)"><br><span>Warm</span></div><div><img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=200" style="filter:grayscale(1)"><br><span>B&W</span></div></div>
+<b>🔥 Trending Music</b><span style="float:right;color:#3b82f6;font-size:13px">See all</span>
+<div class="music">🔥<div><b>Kigali Vibes - Afrobeat mix</b><br><span style="font-size:12px;color:#888">Aline U. • 12.5k uses • 0:15</span></div><button onclick="selectMusic('Kigali Vibes')">+</button></div>
+<div class="music">🎵<div><b>Rwanda Sunset • Chill Lofi</b><br><span style="font-size:12px;color:#888">Davis K. • 9.2k uses • 0:30</span></div><button onclick="selectMusic('Rwanda Sunset')">+</button></div>
+<div class="music">🎵<div><b>Dance Wave • Trending</b><br><span style="font-size:12px;color:#888">Nina M. • 7.8k uses • 0:20</span></div><button onclick="selectMusic('Dance Wave')">+</button></div>
+<div class="flex"><span>🔊</span><input type="range" id="vol" min="0" max="100" value="60" oninput="document.getElementById('volTxt').innerText=this.value+'%'"><b id="volTxt">60%</b><span>🔇</span></div><p style="font-size:12px;color:#888;margin:0">Adjust music volume for post • <span id="chosenMusic">No music selected</span></p>
+<b>Recent</b><span style="float:right;font-size:12px">Select multiple ⏺</span>
+<div class="grid3"><img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=300"><img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=300"><img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300"><img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=300"><img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=300"></div>
+<p>❤️ 0 likes &nbsp; 💬 0 comments &nbsp; ↗ Share</p>
+<div style="background:#f8f8f8;padding:12px;border-radius:12px"><span style="font-size:11px;color:#888">PREVIEW 👁️ Live Preview • Post preview</span><div class="flex" style="margin-top:8px"><img class="av" src="https://i.pravatar.cc/100?img=47"><div><b>Aline U.</b><br><span style="font-size:12px;color:#888">Just now • Kigali, Rwanda</span></div></div><p style="font-size:13px">Vibes in Kigali with friends! 🎉 Enjoying the weekend and good food. #Kigali #ExploreRwanda #Dance #Food #Rwanda</p><img class="post" style="margin:0" src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800"></div>
+<b>Caption</b><textarea id="caption" placeholder="Write a caption... add hashtags like #Kigali #ExploreRwanda"></textarea>
+<b>Add to post</b>
+<div class="flex" style="justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee">📍 <div style="flex:1;margin-left:8px"><b>Add Location</b><br><span style="font-size:12px;color:#888">Kigali, Rwanda</span></div> ›</div>
+<div class="flex" style="justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee"># <div style="flex:1;margin-left:8px"><b>Add Hashtags</b></div><span style="font-size:12px;color:#888">#Dance #Food #Rwanda ›</span></div>
+<div class="flex" style="justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee">👥 <div style="flex:1;margin-left:8px"><b>Tag People</b></div><span style="font-size:12px;color:#888">Tag friends ›</span></div>
+<div class="flex" style="justify-content:space-between;padding:10px 0">💬 <b>Allow comments</b><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
+<div class="flex" style="justify-content:space-between;padding:10px 0">💬 <b>Share to CHAT</b><div class="toggle off" onclick="this.classList.toggle('off')"></div></div>
+<button class="btn btn-grad" onclick="alert('✅ Post yashyizwe kuri SKYLATE!')">Post to SKYLATE 🚀</button>
+</div>
+</div>
 
-// ================= 2. OWNER CREDENTIALS - FIREBASE AUTH =================
-// Kora user muri Firebase Console -> Authentication -> Add User
-// Email: owner@skylate.secret | Password: Iyawe bwite
-const OWNER_EMAIL = "owner@skylate.secret"; // <- Email ya Owner muri Firebase Auth
+<!-- PROFILE -->
+<div id="profile" class="hidden">
+<div class="card" style="text-align:center"><div class="flex" style="justify-content:space-between"><b>SKYLATE</b><span>⚙️ •••</span></div><img class="profilePic" src="https://i.pravatar.cc/200?img=47" style="margin-top:10px"><h2 style="margin:8px 0 2px">Aline U.</h2><span style="color:#888">@aline.u</span><p style="font-size:13px">Creator • Kigali, Rwanda 🇷🇼 | Dance • Food • Life in Kigali</p><div class="flex"><div class="stat"><b>1,248</b><br><span style="font-size:12px;color:#888">Posts</span></div><div class="stat"><b>24.5K</b><br><span style="font-size:12px;color:#888">Followers</span></div><div class="stat"><b>892</b><br><span style="font-size:12px;color:#888">Following</span></div></div><div class="flex" style="margin-top:12px"><button class="btn btn-grad" style="flex:1">Edit Profile</button><button class="btn btn-grey" style="flex:1">Share Profile</button></div><div class="flex" style="justify-content:space-around;margin-top:14px;border-bottom:2px solid #eee;padding-bottom:8px"><b style="color:#2563eb">POSTS</b><span style="color:#888">VIDEOS</span><span style="color:#888">LIKED</span></div><div class="grid3"><img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=300"><img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=300"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300"><img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300"><img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=300"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300"></div></div>
+</div>
 
-// ================= 3. SUBMIT REPORT -> FIREBASE =================
-window.submitReport = async () => {
-  const user = document.getElementById("reportUser").value;
-  const details = document.getElementById("reportDetails").value;
-  const anon = document.getElementById("anonymous").checked;
-  if(!user){ alert("Hitamo uwo urega"); return; }
-  if(!details){ alert("Andika ibyabaye"); return; }
+<!-- REPORT -->
+<div id="report" class="hidden">
+<div class="card"><h2>🚩 SKYLATE Report All</h2><p style="font-size:13px;color:#666">Report someone - Confidential</p><label><b>Who are you reporting?</b></label><select id="reportUser"><option value="">Select user...</option><option>Nina M.</option><option>Kevin R.</option><option>Eric T.</option><option>Aline U.</option><option>Other...</option></select><label><b>Reason:</b></label><div class="check"><input type="checkbox" id="r1"> Harassment / Bullying</div><div class="check"><input type="checkbox" id="r2"> Hateful content</div><div class="check"><input type="checkbox" id="r3"> Spam / Scam</div><div class="check"><input type="checkbox" id="r4"> Copyright / Stole my photo</div><div class="check"><input type="checkbox" id="r5"> Other bad behavior</div><label><b>Describe what happened...</b></label><textarea id="reportDetails" placeholder="Andika ibyabaye neza..."></textarea><div style="background:#f0fff4;border:1px solid #22c55e;padding:12px;border-radius:12px"><div class="check"><input type="checkbox" id="anonymous" checked><b>🕵️ Submit anonymously</b></div><p style="font-size:13px;color:#666;margin:0">Your identity will be hidden</p></div><div class="flex" style="margin-top:12px"><button class="btn btn-grey" style="flex:1">Cancel</button><button class="btn btn-red" style="flex:1" onclick="alert('✅ Report yoherejwe! Murakoze.')">Submit Report</button></div></div>
+<div class="card"><h3>🔒 Require permission to post others</h3><div class="flex"><img src="https://i.pravatar.cc/100?img=12" style="width:60px;height:60px;border-radius:12px;object-fit:cover"><div><b>Unauthorized Post by Nina M.</b><br><span style="font-size:13px;color:#666">Reposted without consent • flagged</span></div></div></div>
+</div>
 
-  let reasons = [];
-  if(document.getElementById("r1").checked) reasons.push("Harassment");
-  if(document.getElementById("r2").checked) reasons.push("Hateful");
-  if(document.getElementById("r3").checked) reasons.push("Spam/Scam");
-  if(document.getElementById("r4").checked) reasons.push("Copyright");
-  if(document.getElementById("r5").checked) reasons.push("Other");
+<div id="ownerLogin" class="card hidden"><h2>🔒 Secret Access</h2><input type="password" id="ownerPassword" placeholder="Secret Password"><button class="btn" style="background:#111;color:#fff" onclick="if(document.getElementById('ownerPassword').value==='SKYLATE2026'){document.getElementById('ownerLogin').classList.add('hidden');document.getElementById('ownerDashboard').classList.remove('hidden')}else{alert('Access Denied')}">Enter</button></div>
+<div id="ownerDashboard" class="card hidden"><h2>🔐 Secret Dashboard</h2><p>Owner Only</p><button class="btn btn-grey" onclick="document.getElementById('ownerDashboard').classList.add('hidden')">Logout</button></div>
 
-  const btn = document.getElementById("submitBtn");
-  btn.innerText = "Sending..."; btn.disabled = true;
+<div class="bottomNav"><button class="active" onclick="showTab('social',this)">🏠</button><button onclick="showTab('videos',this)">🎬</button><button onclick="showTab('create',this)" style="background:linear-gradient(90deg,#3b82f6,#a855f7);color:#fff;width:44px;height:44px;border-radius:50%;margin-top:-14px;font-size:26px">+</button><button onclick="showTab('chat',this)">💬</button><button onclick="showTab('profile',this)">👤</button></div>
 
-  try {
-    await addDoc(collection(db, "skylate_reports"), {
-      reportedUser: user,
-      reasons: reasons.join(", ") || "Not specified",
-      details,
-      proof: document.getElementById("reportProof").value || "",
-      anonymous: anon,
-      reporter: anon ? "Anonymous 🕵️" : "Not Anonymous - Hidden",
-      status: "Investigating",
-      createdAt: serverTimestamp()
-    });
-    document.getElementById("reportMsg").innerText = "✅ Report yoherejwe kuri server! Murakoze.";
-    clearReport();
-  } catch(e){
-    alert("Error: " + e.message);
-  }
-  btn.innerText = "Submit Report to SKYLATE"; btn.disabled = false;
-};
-
-window.clearReport = () => {
-  document.getElementById("reportUser").value="";
-  document.getElementById("reportDetails").value="";
-  document.getElementById("reportProof").value="";
-};
-
-// ================= 4. SECRET OWNER LOGIN =================
-document.addEventListener("keydown", (e)=>{
-  if(e.ctrlKey && e.shiftKey && e.key.toLowerCase()==="s"){
-    e.preventDefault();
-    document.getElementById("userView").classList.add("hidden");
-    document.getElementById("ownerDashboard").classList.add("hidden");
-    document.getElementById("ownerLogin").classList.remove("hidden");
-  }
-});
-
-window.ownerLogin = async () => {
-  const username = document.getElementById("ownerUsername").value.trim();
-  const password = document.getElementById("ownerPassword").value;
-  // Username uyihindura mo Email ya Firebase
-  // Niba username ari "skylate_boss" -> ihinduke owner@skylate.secret
-  const email = username.includes("@") ? username : OWNER_EMAIL;
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    showDashboard();
-  } catch(e){
-    document.getElementById("ownerError").innerText = "❌ Access Denied - " + e.message;
-  }
-};
-
-window.ownerLogout = async () => {
-  await signOut(auth);
-  document.getElementById("ownerDashboard").classList.add("hidden");
-  document.getElementById("userView").classList.remove("hidden");
-};
-
-function showDashboard(){
-  document.getElementById("userView").classList.add("hidden");
-  document.getElementById("ownerLogin").classList.add("hidden");
-  document.getElementById("ownerDashboard").classList.remove("hidden");
-  listenReports();
-}
-
-// ================= 5. LIVE REPORTS - OWNER WENYINE =================
-let unsub = null;
-function listenReports(){
-  if(unsub) return;
-  const q = query(collection(db, "skylate_reports"), orderBy("createdAt","desc"));
-  unsub = onSnapshot(q, (snap)=>{
-    const list = document.getElementById("reportsList");
-    document.getElementById("statReports").innerText = snap.size;
-    let copyright = 0, anonCount = 0;
-    snap.forEach(d=>{ const r=d.data(); if(r.reasons.includes("Copyright")) copyright++; if(r.anonymous) anonCount++; });
-    document.getElementById("statCopyright").innerText = copyright;
-    document.getElementById("statAnon").innerText = anonCount;
-
-    if(snap.empty){ list.innerHTML="<p class='small'>Nta report irageza...</p>"; return; }
-    list.innerHTML = "";
-    snap.forEach(d=>{
-      const r = d.data();
-      const div = document.createElement("div");
-      div.style.cssText="border-bottom:1px solid #eee;padding:10px 0";
-      div.innerHTML = `
-        <b>Report - ${r.reportedUser}</b><br>
-        <span class="small">${r.reasons} • ${r.reporter} • ${r.status}</span><br>
-        ${r.details}<br>
-        <span class="small">Proof: ${r.proof||"Nta proof"}</span><br>
-        <button style="margin-top:6px;padding:6px 12px;border:none;border-radius:8px;background:#fee;cursor:pointer" onclick="deleteReport('${d.id}')">Delete</button>
-        <button style="margin-top:6px;padding:6px 12px;border:none;border-radius:8px;background:#e8ffe8;cursor:pointer" onclick="alert('Marked Resolved')">Mark Resolved</button>
-      `;
-      list.appendChild(div);
-    });
-  });
-}
-
-window.deleteReport = async (id) => {
-  if(!confirm("Delete this report?")) return;
-  await deleteDoc(doc(db, "skylate_reports", id));
-};
-
-// Auto-check if Owner already logged in
-onAuthStateChanged(auth, (user)=>{
-  if(user && user.email === OWNER_EMAIL){ showDashboard(); }
-});
+<script>
+function showTab(id,btn){ ['social','videos','search','chat','create','profile','report'].forEach(x=>document.getElementById(x).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.bottomNav button').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); window.scrollTo(0,0); }
+function selectMusic(name){ document.getElementById('chosenMusic').innerText='Selected: '+name+' 🎵'; alert('🎵 '+name+' yatoranyijwe!'); }
+function previewFile(input){ if(input.files&&input.files[0]){ const r=new FileReader(); r.onload=e=>{ const im=document.getElementById('previewImg'); im.src=e.target.result; im.classList.remove('hidden'); }; r.readAsDataURL(input.files[0]); } }
+document.addEventListener('keydown',e=>{ if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='s'){ e.preventDefault(); document.getElementById('ownerLogin').classList.remove('hidden'); window.scrollTo(0,document.body.scrollHeight); }});
 </script>
 </body>
 </html>
