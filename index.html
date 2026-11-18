@@ -3,765 +3,102 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SKYLATE</title>
+<title>SKYLATE - Real App</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;background:#f0f2f5;padding-bottom:90px;transition:.3s}
-.topbar{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;padding:14px 14px 10px;position:sticky;top:0;z-index:10}
-.topbar b{font-size:23px;letter-spacing:1px}
-.tabs{display:flex;gap:18px;margin-top:12px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
-.tabs::-webkit-scrollbar{display:none}
-.tabs button{background:none;border:none;color:#bfdbfe;font-weight:800;padding:6px 2px;cursor:pointer;font-size:14px;white-space:nowrap}
+body{margin:0;background:#f0f2f5;padding-bottom:90px}
+.topbar{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;padding:14px;position:sticky;top:0;z-index:10}
+.topbar b{font-size:23px}
+.tabs{display:flex;gap:18px;margin-top:12px;overflow-x:auto;scrollbar-width:none}
+.tabs button{background:none;border:none;color:#bfdbfe;font-weight:800;cursor:pointer;white-space:nowrap}
 .tabs button.active{color:#fff;border-bottom:3px solid #fff}
-.search{margin:12px;background:#fff;border-radius:20px;padding:12px 14px;display:flex;gap:8px;align-items:center;color:#777;box-shadow:0 1px 5px rgba(0,0,0,.05)}
-.card{background:#fff;border-radius:16px;margin:0 12px 14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);transition:.3s}
+.card{background:#fff;border-radius:16px;margin:0 12px 14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
 .flex{display:flex;gap:10px;align-items:center}
 img.av{width:44px;height:44px;border-radius:50%;object-fit:cover}
-img.post{width:100%;border-radius:14px;margin-top:10px;object-fit:cover;max-height:320px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
-.grid3 img{width:100%;height:110px;object-fit:cover;border-radius:10px}
+img.post,video.post{width:100%;border-radius:14px;margin-top:10px;object-fit:cover;max-height:360px;background:#000}
 .btn{width:100%;padding:13px;border:none;border-radius:12px;font-weight:800;cursor:pointer}
 .btn-grad{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff}
 .btn-red{background:#e11d2e;color:#fff}
 .btn-grey{background:#eee}
-input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;margin:8px 0;font-size:15px;background:#fff}
-textarea{min-height:70px;resize:none}
-.upload{border:2px dashed #2563eb;border-radius:16px;padding:22px;text-align:center;background:#eff6ff}
-.filters{display:flex;gap:10px;overflow-x:auto;padding:6px 0}
-.filters div{text-align:center;flex-shrink:0}
-.filters img{width:68px;height:68px;object-fit:cover;border-radius:12px}
-.filters span{font-size:11px}
-.music{display:flex;align-items:center;gap:10px;background:#f8f8f8;border-radius:12px;padding:10px;margin:8px 0}
-.music button{margin-left:auto;width:32px;height:32px;border-radius:50%;border:1px solid #ddd;background:#fff;font-size:18px}
-input[type=range]{accent-color:#2563eb}
-.toggle{width:44px;height:24px;background:#22c55e;border-radius:20px;position:relative;flex-shrink:0;cursor:pointer}
-.toggle:after{content:"";position:absolute;right:3px;top:3px;width:18px;height:18px;background:#fff;border-radius:50%}
-.toggle.off{background:#ccc}.toggle.off:after{left:3px;right:auto}
-.videoCard{margin:0 12px 14px;border-radius:18px;overflow:hidden;position:relative;background:#000;color:#fff;min-height:480px;display:flex;align-items:flex-end}
-.videoCard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.videoCard .ov{position:relative;z-index:2;padding:14px;width:100%;background:linear-gradient(transparent,rgba(0,0,0,.8))}
-.side{position:absolute;right:12px;top:38%;z-index:3;text-align:center;font-size:12px}
-.side div{font-size:26px;margin:8px 0 2px}
-.bottomNav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;align-items:center;padding:8px 0 12px;border-top:1px solid #eee;z-index:20;transition:.3s}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;margin:8px 0;font-size:15px}
+textarea{min-height:70px}
+.upload{border:2px dashed #2563eb;border-radius:16px;padding:22px;text-align:center;background:#eff6ff;cursor:pointer}
+.hidden{display:none!important}
+.bottomNav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:8px 0 12px;border-top:1px solid #eee;z-index:20}
 .bottomNav button{background:none;border:none;font-size:24px;cursor:pointer;color:#888}
 .bottomNav button.active{color:#2563eb}
-.plusBtn{background:linear-gradient(135deg,#2563eb,#1e40af)!important;color:#fff!important;width:48px!important;height:48px!important;border-radius:50%!important;margin-top:-18px!important;font-size:28px!important;box-shadow:0 4px 12px rgba(37,99,235,.4)}
-.hidden{display:none!important}
+.plusBtn{background:linear-gradient(135deg,#2563eb,#1e40af)!important;color:#fff!important;width:48px!important;height:48px!important;border-radius:50%!important;margin-top:-18px!important;font-size:28px!important}
 .profileHeader{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;padding:18px 16px 28px;border-radius:0 0 24px 24px;text-align:center}
-.profilePic{width:112px;height:112px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.25);cursor:pointer}
-.stat{text-align:center;flex:1}.stat b{font-size:18px}
-.statsCard{background:#fff;margin:-18px 14px 14px;padding:16px;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.08);display:flex;transition:.3s}
-.check{display:flex;gap:10px;align-items:center;margin:8px 0}
-.check input{width:20px;height:20px;flex-shrink:0;margin:0}
-.darkBtn{background:rgba(255,255,255,.2);border:none;color:#fff;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer}
-.stories{display:flex;gap:14px;overflow-x:auto;padding:12px 12px 4px;scrollbar-width:none}
-.stories::-webkit-scrollbar{display:none}
-.story{flex-shrink:0;text-align:center;cursor:pointer;width:72px}
-.storyImg{width:64px;height:64px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#2563eb,#f59e0b,#ec4899)}
-.storyImg img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid #fff;display:block}
-.story span{font-size:11px;font-weight:700}
-.storyAdd{position:relative}
-.storyAdd b{position:absolute;bottom:14px;right:0;background:#2563eb;color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;font-size:14px}
-#storyViewer{position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column}
-#storyViewer img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-#storyViewer .top{position:relative;z-index:2;padding:14px;display:flex;gap:10px;align-items:center;color:#fff}
-#storyViewer .bar{position:relative;z-index:2;height:4px;background:rgba(255,255,255,.3);margin:12px 12px 0;border-radius:4px;overflow:hidden}
-#storyViewer .bar div{height:100%;width:0;background:#fff;transition:width 5s linear}
-#storyViewer .bottom{position:relative;z-index:2;margin-top:auto;padding:14px;display:flex;gap:10px}
-#storyViewer .bottom input{flex:1;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff}
-#storyViewer .bottom input::placeholder{color:#ddd}
-.liveBadge{background:#e11d2e;color:#fff;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:800;display:inline-flex;gap:5px;align-items:center}
-.dot{width:8px;height:8px;background:#fff;border-radius:50%;animation:blink 1s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.liveCard{margin:12px;border-radius:18px;overflow:hidden;position:relative;background:#000;color:#fff;min-height:340px;cursor:pointer}
-.liveCard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.liveCard .ov{position:absolute;bottom:0;left:0;right:0;padding:14px;background:linear-gradient(transparent,rgba(0,0,0,.85))}
-.liveCard .topLive{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between}
-.viewers{background:rgba(0,0,0,.6);padding:6px 10px;border-radius:12px;font-size:12px;font-weight:700}
-#liveRoom{position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column;color:#fff}
-#liveRoom img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-#liveRoom .topL{position:relative;z-index:2;padding:14px;display:flex;gap:10px;align-items:center}
-#liveRoom .comments{position:relative;z-index:2;margin-top:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
-#liveRoom .cmt{background:rgba(0,0,0,.55);padding:8px 10px;border-radius:12px;font-size:13px;width:fit-content;max-width:85%}
-#liveRoom .inputRow{position:relative;z-index:2;padding:12px;display:flex;gap:8px}
-#liveRoom .inputRow input{flex:1;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;margin:0}
-#liveRoom .inputRow input::placeholder{color:#ddd}
-.actionBtn{background:none;border:none;font-size:15px;cursor:pointer;padding:6px 2px;color:#333;font-weight:600}
+.profilePic{width:112px;height:112px;border-radius:50%;object-fit:cover;border:4px solid #fff}
+#loginScreen{position:fixed;inset:0;background:linear-gradient(180deg,#2563eb,#1e40af 55%,#0f172a);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;color:#fff}
+#loginScreen .loginCard{background:#fff;color:#333;border-radius:24px;padding:22px;width:100%;max-width:380px}
+.errMsg{background:#fee2e2;color:#b91c1c;padding:10px;border-radius:10px;font-size:13px;display:none}
+.okMsg{background:#dcfce7;color:#166534;padding:10px;border-radius:10px;font-size:13px;display:none}
+.actionBtn{background:none;border:none;font-size:15px;cursor:pointer;font-weight:600}
 .actionBtn.liked{color:#e11d2e}
-.commentsBox{border-top:1px solid #eee;margin-top:12px;padding-top:10px}
-.commentRow{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
-.commentRow img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0}
-.commentBubble{background:#f0f2f5;padding:8px 12px;border-radius:14px;flex:1;font-size:13px}
-.commentBubble b{font-size:13px}
-.commentInputRow{display:flex;gap:8px;align-items:center;margin-top:10px}
-.commentInputRow input{margin:0;flex:1;padding:10px}
-.commentInputRow button{width:auto;padding:10px 14px}
-.bellBtn{position:relative;background:rgba(255,255,255,.2);border:none;color:#fff;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer}
-.bellBadge{position:absolute;top:-4px;right:-4px;background:#e11d2e;color:#fff;font-size:10px;font-weight:800;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
-#notifPanel{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:90;display:none}
-#notifPanel .box{background:#fff;border-radius:20px 20px 0 0;position:absolute;bottom:0;left:0;right:0;max-height:75%;overflow-y:auto;padding:16px;padding-bottom:100px}
-.notifItem{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid #eee;cursor:pointer}
-.notifItem.unread{background:#eff6ff;border-radius:12px;padding:12px}
-.notifItem .icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:#eff6ff}
-.notifItem.unread .dotBlue{width:8px;height:8px;background:#2563eb;border-radius:50%;flex-shrink:0;margin-top:6px}
-.followBtn{background:#2563eb;color:#fff;border:none;padding:7px 16px;border-radius:20px;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;transition:.2s}
-.followBtn.following{background:#e8f5e9;color:#22c55e;border:1px solid #22c55e}
-.followBtnSmall{background:#2563eb;color:#fff;border:none;padding:6px 12px;border-radius:16px;font-weight:800;font-size:11px;cursor:pointer}
-.followBtnSmall.following{background:#e8f5e9;color:#22c55e;border:1px solid #22c55e}
-.profilePicWrap{position:relative;display:inline-block}
-.profilePicWrap .camBadge{position:absolute;bottom:6px;right:6px;background:#2563eb;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid #fff;font-size:14px;cursor:pointer}
-#photoModal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:95;display:none;align-items:flex-end;justify-content:center}
-#photoModal .sheet{background:#fff;border-radius:20px 20px 0 0;width:100%;padding:20px;padding-bottom:40px;text-align:center}
-#photoModal .sheet button{margin:6px 0}
-.myAvatar{border:2px solid #2563eb}
-.chatItem{display:flex;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #eee;cursor:pointer}
-.chatItem .onlineDot{position:absolute;bottom:2px;right:2px;width:12px;height:12px;background:#22c55e;border-radius:50%;border:2px solid #fff}
-.chatItem .avWrap{position:relative;flex-shrink:0}
-.unreadBadge{background:#e11d2e;color:#fff;font-size:11px;font-weight:800;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px}
-#chatRoom{position:fixed;inset:0;background:#f0f2f5;z-index:100;display:none;flex-direction:column}
-#chatRoom .chatHead{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;padding:12px;display:flex;gap:10px;align-items:center}
-#chatRoom .chatBody{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
-.msg{max-width:75%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.4}
-.msg.me{align-self:flex-end;background:#2563eb;color:#fff;border-bottom-right-radius:4px}
-.msg.them{align-self:flex-start;background:#fff;color:#333;border-bottom-left-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.msg small{display:block;font-size:10px;opacity:.7;margin-top:4px;text-align:right}
-.msg.them small{color:#888}
-#chatRoom .chatInput{background:#fff;padding:10px;display:flex;gap:8px;align-items:center;border-top:1px solid #eee}
-#chatRoom .chatInput input{margin:0;flex:1;background:#f0f2f5}
-#chatRoom .chatInput button{width:44px;height:44px;border-radius:50%;border:none;background:#2563eb;color:#fff;font-size:18px;cursor:pointer;flex-shrink:0}
-.typing{font-size:12px;color:#888;font-style:italic;padding:0 14px}
-.searchInput{flex:1;border:none;outline:none;padding:4px;font-size:15px;background:transparent;margin:0}
-.searchTag{display:inline-block;background:#eff6ff;color:#2563eb;padding:6px 12px;border-radius:16px;font-size:12px;font-weight:700;margin:4px;cursor:pointer}
-.searchTag.active{background:#2563eb;color:#fff}
-.searchResult{cursor:pointer}
-.settingsBtn{background:rgba(255,255,255,.2);border:none;color:#fff;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer}
-.setRow{display:flex;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid #eee;cursor:pointer}
-.setRow .setIcon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.setRow:last-child{border-bottom:none}
-/* LOGIN WITH EMAIL */
-#loginScreen{position:fixed;inset:0;background:linear-gradient(180deg,#2563eb,#1e40af 55%,#0f172a);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;color:#fff;overflow-y:auto}
-#loginScreen .loginCard{background:#fff;color:#333;border-radius:24px;padding:22px;width:100%;max-width:380px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
-#loginScreen input{margin:8px 0}
-.loginTab{display:flex;background:#f0f2f5;border-radius:12px;padding:4px;margin-bottom:12px}
-.loginTab button{flex:1;border:none;padding:10px;border-radius:10px;font-weight:800;cursor:pointer;background:transparent;color:#888}
-.loginTab button.active{background:#fff;color:#2563eb;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.errMsg{background:#fee2e2;color:#b91c1c;padding:10px;border-radius:10px;font-size:13px;display:none;margin:8px 0}
-.okMsg{background:#dcfce7;color:#166534;padding:10px;border-radius:10px;font-size:13px;display:none;margin:8px 0}
-body.dark{background:#0f172a;color:#e2e8f0}
-body.dark .card,body.dark .search,body.dark .statsCard,body.dark .bottomNav{background:#1e293b;color:#e2e8f0;box-shadow:none;border:1px solid #334155}
-body.dark input,body.dark select,body.dark textarea{background:#0f172a;color:#fff;border-color:#334155}
-body.dark .btn-grey{background:#334155;color:#fff}
-body.dark .music{background:#0f172a}
-body.dark .upload{background:#1e293b}
-body.dark .topbar{background:linear-gradient(135deg,#1e3a8a,#0f172a)}
-body.dark .profileHeader{background:linear-gradient(135deg,#1e3a8a,#0f172a)}
-body.dark .commentBubble{background:#0f172a}
-body.dark .actionBtn{color:#e2e8f0}
-body.dark .commentsBox{border-color:#334155}
-body.dark #notifPanel .box{background:#1e293b;color:#e2e8f0}
-body.dark .notifItem{border-color:#334155}
-body.dark .notifItem.unread{background:#1e3a8a}
-body.dark #photoModal .sheet{background:#1e293b;color:#e2e8f0}
-body.dark #chatRoom{background:#0f172a}
-body.dark #chatRoom .chatInput{background:#1e293b;border-color:#334155}
-body.dark .msg.them{background:#1e293b;color:#e2e8f0}
-body.dark .chatItem{border-color:#334155}
-body.dark .searchTag{background:#1e3a8a;color:#e2e8f0}
-body.dark .searchInput{color:#fff}
-body.dark .setRow{border-color:#334155}
+.videoCard{margin:0 12px 14px;border-radius:18px;overflow:hidden;position:relative;background:#000;color:#fff;min-height:480px;display:flex;align-items:flex-end}
+.videoCard video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.videoCard .ov{position:relative;z-index:2;padding:14px;width:100%;background:linear-gradient(transparent,rgba(0,0,0,.8))}
+.newBadge{background:#22c55e;color:#fff;font-size:10px;padding:3px 8px;border-radius:10px;font-weight:800}
 </style>
 </head>
 <body>
-
-<!-- LOGIN WITH EMAIL -->
 <div id="loginScreen">
-<div style="text-align:center;margin-bottom:16px"><div style="font-size:52px">🌐</div><h1 style="margin:6px 0;font-size:34px;letter-spacing:2px">SKYLATE</h1><p style="opacity:.9;margin:0;font-size:14px">Connect • Share • Live in Kigali 🇷🇼</p></div>
+<div style="text-align:center;margin-bottom:16px"><div style="font-size:52px">🌐</div><h1 style="margin:6px 0;font-size:34px;letter-spacing:2px">SKYLATE</h1><p style="margin:0">Real App • Buri muntu abona buri muntu 🇷🇼</p></div>
 <div class="loginCard">
-<div class="loginTab"><button id="tabLogin" class="active" onclick="switchAuth('login')">Login</button><button id="tabSignup" onclick="switchAuth('signup')">Sign Up</button></div>
-<div class="errMsg" id="authError"></div>
-<div class="okMsg" id="authOk"></div>
-<!-- LOGIN FORM -->
-<div id="loginForm">
-<label style="font-size:13px;font-weight:700">📧 Email</label>
-<input type="email" id="loginEmail" placeholder="e.g. aline@gmail.com" value="aline@gmail.com">
-<label style="font-size:13px;font-weight:700">🔑 Password</label>
-<input type="password" id="loginPassword" placeholder="Password" value="1234">
-<div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin:4px 0"><label><input type="checkbox" id="rememberMe" checked style="width:16px;height:16px;margin:0"> Remember me</label><span style="color:#2563eb;font-weight:700;cursor:pointer" onclick="forgotPassword()">Forgot Password?</span></div>
-<button class="btn btn-grad" onclick="doLogin()">Login to SKYLATE →</button>
-<p style="font-size:12px;color:#888;text-align:center;margin:10px 0 0">Demo: <b>aline@gmail.com</b> / <b>1234</b><br>Or Sign Up with your own email!</p>
+<div style="display:flex;background:#f0f2f5;border-radius:12px;padding:4px;margin-bottom:12px"><button id="tabLogin" style="flex:1;border:none;padding:10px;border-radius:10px;font-weight:800;background:#fff;color:#2563eb" onclick="switchAuth('login')">Login</button><button id="tabSignup" style="flex:1;border:none;padding:10px;border-radius:10px;font-weight:800;background:transparent;color:#888" onclick="switchAuth('signup')">Sign Up</button></div>
+<div class="errMsg" id="authError"></div><div class="okMsg" id="authOk"></div>
+<div id="loginForm"><label><b>📧 Email</b></label><input type="email" id="loginEmail" placeholder="you@gmail.com"><label><b>🔑 Password</b></label><input type="password" id="loginPassword" placeholder="Password"><button class="btn btn-grad" onclick="doLogin()">Login to SKYLATE →</button><p style="font-size:12px;text-align:center" onclick="forgotPassword()"><span style="color:#2563eb;font-weight:700;cursor:pointer">Forgot Password?</span></p></div>
+<div id="signupForm" class="hidden"><label><b>👤 Full Name</b></label><input type="text" id="signupName" placeholder="Aline Uwase"><label><b>📧 Email</b></label><input type="email" id="signupEmail" placeholder="you@gmail.com"><label><b>🔑 Password</b></label><input type="password" id="signupPassword" placeholder="Min 6 characters"><button class="btn btn-grad" onclick="doSignup()">Create Account ✨</button></div>
+</div><p style="font-size:12px;opacity:.8;margin-top:14px">Firebase • Project: skylat-3c7f4 • © 2026 SKYLATE</p>
 </div>
-<!-- SIGNUP FORM -->
-<div id="signupForm" class="hidden">
-<label style="font-size:13px;font-weight:700">👤 Full Name</label>
-<input type="text" id="signupName" placeholder="e.g. Aline Uwase">
-<label style="font-size:13px;font-weight:700">📧 Email</label>
-<input type="email" id="signupEmail" placeholder="e.g. you@gmail.com">
-<label style="font-size:13px;font-weight:700">🔑 Password</label>
-<input type="password" id="signupPassword" placeholder="At least 4 characters">
-<label style="font-size:13px;font-weight:700">🔑 Confirm Password</label>
-<input type="password" id="signupPassword2" placeholder="Repeat password">
-<button class="btn btn-grad" onclick="doSignup()">Create Account ✨</button>
-<p style="font-size:11px;color:#888;text-align:center">By signing up, you agree to SKYLATE Terms & Privacy</p>
+<div id="appWrap" class="hidden">
+<div class="topbar"><div class="flex" style="justify-content:space-between"><b>SKYLATE</b><div class="flex"><span style="background:#22c55e;padding:5px 10px;border-radius:12px;font-size:12px;font-weight:700">● LIVE - Firebase</span><button style="background:rgba(255,255,255,.2);border:none;color:#fff;width:38px;height:38px;border-radius:50%;font-size:18px" onclick="showTab('settings',null)">⚙️</button></div></div>
+<div class="tabs"><button class="active" onclick="showTab('social',this)">SOCIAL</button><button onclick="showTab('videos',this)">VIDEOS</button><button onclick="showTab('create',this)">+ CREATE</button><button onclick="showTab('profile',this)">PROFILE</button><button onclick="showTab('settings',this)">⚙️ SETTINGS</button></div></div>
+<div id="social"><div class="card" style="background:#eff6ff"><b>👋 Murakaza neza, <span class="userNameTxt">...</span>!</b><br><span style="font-size:12px">Logged in as <b class="userEmailTxt">...</b> • <span style="color:#22c55e;font-weight:700">● Firebase Connected</span><br><span id="globalStats">Loading posts...</span></span></div><div id="feedPosts"></div><div class="card"><b>🔥 Sample Video - Kanda Play!</b><video class="post" controls playsinline poster="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800"><source src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4"></video><p>Kigali dance challenge 🔥 #Kigali</p></div></div>
+<div id="videos" class="hidden"><div class="card"><b>🎬 Videos - Buri muntu abibona!</b></div><div id="videosFeed"></div><div class="videoCard"><video controls playsinline poster="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800"><source src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4"></video><div class="ov"><b>@kevin.rw</b><br>Kigali dance challenge 🔥</div></div></div>
+<div id="create" class="hidden"><div class="card"><div class="flex" style="justify-content:space-between"><span onclick="showTab('social',null)">←</span><b>Create Post - Buri muntu abibona!</b></div><div class="upload" onclick="document.getElementById('fileInput').click()"><div style="font-size:36px">+</div><b>Tap to upload photo or video</b><br><span style="font-size:13px;color:#666">Gallery yawe</span><input type="file" id="fileInput" accept="image/*,video/*" style="display:none" onchange="previewFile(this)"><img id="previewImg" class="post hidden"><video id="previewVideo" class="post hidden" controls playsinline></video></div><div id="uploadProgress" class="hidden" style="background:#eff6ff;padding:10px;border-radius:10px;margin-top:8px;font-size:13px">⏳ Uploading... <span id="uploadPct">0%</span></div><b>Caption</b><textarea id="postCaption" placeholder="Write a caption... #Kigali"></textarea><label><b>👥 Ninde ubona?</b></label><select id="postAudience"><option value="Everyone">🌍 Everyone - Buri muntu ku isi abibona</option><option value="Followers">👥 Followers only</option></select><button class="btn btn-grad" id="publishBtn" onclick="publishPost()">Post to SKYLATE 🚀 - Buri muntu abibona!</button><button class="btn btn-grey" style="margin-top:10px" onclick="clearCreate()">Clear</button></div></div>
+<div id="profile" class="hidden"><div class="profileHeader"><img class="profilePic" src="https://i.pravatar.cc/200?img=47"><h2><span class="userNameTxt">...</span></h2><span>📧 <span class="userEmailTxt">...</span> • Verified ✓</span><p>Creator • Kigali, Rwanda 🇷🇼</p></div><div class="card"><b>MY POSTS - <span id="myPostsCount">0</span></b><div id="myPostsGrid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px"></div></div></div>
+<div id="settings" class="hidden"><div class="card"><b>⚙️ Settings</b><br><span class="userNameTxt">...</span> • <span class="userEmailTxt">...</span><br><span style="font-size:12px;color:#888">Project: skylat-3c7f4</span></div><div class="card"><button class="btn btn-grad" onclick="alert('Data yawe ibikwa kuri Firebase')">📥 Download My Data</button><button class="btn btn-red" style="margin-top:10px" onclick="logoutUser()">🚪 Logout</button></div></div>
+<div class="bottomNav"><button class="active" onclick="showTab('social',this)">🏠</button><button onclick="showTab('videos',this)">🎬</button><button class="plusBtn" onclick="showTab('create',this)">+</button><button onclick="showTab('profile',this)">👤</button></div>
 </div>
-</div>
-<p style="font-size:12px;opacity:.8;margin-top:14px;text-align:center">Made with ❤️ in Kigali, Rwanda<br>© 2026 SKYLATE</p>
-</div>
-
-<div id="appWrap">
-<div class="topbar">
-<div class="flex" style="justify-content:space-between"><b>SKYLATE</b><div class="flex"><button class="darkBtn" id="darkBtn" onclick="toggleDark()">🌙</button><button class="bellBtn" onclick="openNotif()">🔔<span class="bellBadge" id="bellBadge">3</span></button><button class="settingsBtn" onclick="showTab('settings',null)">⚙️</button></div></div>
-<div class="tabs">
-<button class="active" onclick="showTab('social',this)">SOCIAL</button>
-<button onclick="showTab('videos',this)">VIDEOS</button>
-<button onclick="showTab('live',this)">🔴 LIVE</button>
-<button onclick="showTab('search',this)">SEARCH</button>
-<button onclick="showTab('chat',this)">CHAT</button>
-<button onclick="showTab('create',this)">+ CREATE</button>
-<button onclick="showTab('profile',this)">PROFILE</button>
-<button onclick="showTab('settings',this)">⚙️ SETTINGS</button>
-<button onclick="showTab('report',this)">🚩 REPORT</button>
-</div>
-</div>
-
-<div id="notifPanel" onclick="if(event.target===this) closeNotif()">
-<div class="box">
-<div class="flex" style="justify-content:space-between"><h2 style="margin:0">🔔 Notifications</h2><span style="font-size:22px;cursor:pointer" onclick="closeNotif()">✕</span></div>
-<p style="font-size:12px;color:#888"><span id="unreadTxt">3 new notifications</span> • <span style="color:#2563eb;font-weight:700;cursor:pointer" onclick="markAllRead()">Mark all as read</span></p>
-<div id="notifList">
-<div class="notifItem unread"><div class="icon">❤️</div><div style="flex:1"><b>Kevin R.</b> yakunze post yawe<br><span style="font-size:12px;color:#888">Vibes in Kigali • 2m ago</span></div><span class="dotBlue"></span></div>
-<div class="notifItem unread"><div class="icon">💬</div><div style="flex:1"><b>Davis K.</b> yagize comment: "Next time mutwite! 🔥"<br><span style="font-size:12px;color:#888">Vibes in Kigali • 5m ago</span></div><span class="dotBlue"></span></div>
-<div class="notifItem unread"><div class="icon">👥</div><div style="flex:1"><b>Nina M.</b> yatangiye kugukurikira<br><span style="font-size:12px;color:#888">• 12m ago</span></div><span class="dotBlue"></span></div>
-<div class="notifItem"><div class="icon">🔴</div><div style="flex:1"><b>Kevin R.</b> yatangiye Live!<br><span style="font-size:12px;color:#888">Kigali dance challenge • 1h ago</span></div></div>
-<div class="notifItem"><div class="icon">📱</div><div style="flex:1"><b>SKYLATE</b> Murakaza neza kuri SKYLATE! 🎉<br><span style="font-size:12px;color:#888">• 2h ago</span></div></div>
-</div>
-<button class="btn btn-grey" onclick="closeNotif()" style="margin-top:12px">Close</button>
-</div>
-</div>
-
-<div id="photoModal" onclick="if(event.target===this) closePhotoModal()">
-<div class="sheet">
-<img id="photoPreview" src="https://i.pravatar.cc/200?img=47" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #2563eb">
-<h3 style="margin:10px 0 4px">📸 Change Profile Photo</h3>
-<p style="font-size:12px;color:#888;margin:0 0 10px">Kanda ifoto yawe kugirango uhindure</p>
-<button class="btn btn-grad" onclick="document.getElementById('profileFile').click()">📁 Choose from Gallery</button>
-<button class="btn btn-grey" onclick="document.getElementById('profileFile').click()">📷 Take Photo</button>
-<input type="file" id="profileFile" accept="image/*" style="display:none" onchange="changeProfilePhoto(this)">
-<button class="btn btn-grad" onclick="saveProfilePhoto()">✅ Save Photo</button>
-<button class="btn btn-grey" onclick="removeProfilePhoto()">🗑️ Remove Photo</button>
-<button class="btn btn-grey" onclick="closePhotoModal()">Cancel</button>
-</div>
-</div>
-
-<div id="chatRoom">
-<div class="chatHead"><span style="font-size:22px;cursor:pointer" onclick="closeChat()">←</span><img id="chatHeadImg" src="" style="width:40px;height:40px;border-radius:50%;object-fit:cover"><div style="flex:1"><b id="chatHeadName">Davis K.</b><br><span style="font-size:12px;opacity:.85" id="chatHeadStatus">● Online • Active now</span></div><span style="font-size:20px">📞</span><span style="font-size:20px;margin-left:8px">📹</span></div>
-<div class="chatBody" id="chatBody"></div>
-<div class="typing hidden" id="typingTxt">Davis K. is typing...</div>
-<div class="chatInput"><span style="font-size:22px;cursor:pointer" onclick="alert('😊 Emoji picker - vuba!')">😊</span><span style="font-size:22px;cursor:pointer" onclick="alert('📎 Attach - vuba!')">📎</span><input id="chatInput" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendChat()"><button onclick="sendChat()">➤</button></div>
-</div>
-
-<div id="social">
-<div class="stories">
-<div class="story" onclick="showTab('create',null)"><div class="storyImg storyAdd"><img class="myAvatar" src="https://i.pravatar.cc/100?img=47"><b>+</b></div><span>Your Story</span></div>
-<div class="story" onclick="openStory('Aline U.','https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800','Kigali vibes! ❤️')"><div class="storyImg"><img class="myAvatar" src="https://i.pravatar.cc/100?img=47"></div><span class="userNameTxt">Aline U.</span></div>
-<div class="story" onclick="openStory('Kevin R.','https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800','Dance challenge 🔥')"><div class="storyImg"><img src="https://i.pravatar.cc/100?img=12"></div><span>Kevin R.</span></div>
-<div class="story" onclick="openStory('Davis K.','https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800','Amazing view 🌄')"><div class="storyImg"><img src="https://i.pravatar.cc/100?img=32"></div><span>Davis K.</span></div>
-<div class="story" onclick="openStory('Nina M.','https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800','Food time! 😋')"><div class="storyImg"><img src="https://i.pravatar.cc/100?img=5"></div><span>Nina M.</span></div>
-</div>
-<div class="search" onclick="showTab('search',null);setTimeout(()=>document.getElementById('mainSearch').focus(),100)">🔍 <span style="color:#888">Search everything - people, videos, photos...</span></div>
-<div class="card" style="background:#eff6ff"><b>👋 Murakaza neza, <span class="userNameTxt">Aline U.</span>!</b><br><span style="font-size:12px;color:#666">Logged in as <b class="userEmailTxt">aline@gmail.com</b></span>
-<div class="flex" style="margin-top:12px"><img class="av" src="https://i.pravatar.cc/100?img=32"><div style="flex:1"><b>Davis K.</b><br><span style="font-size:12px;color:#888">12 mutual friends • Kigali</span></div><button class="followBtn" data-user="Davis K." onclick="toggleFollow(this,'Davis K.')">Follow</button></div>
-<div class="flex" style="margin-top:12px"><img class="av" src="https://i.pravatar.cc/100?img=5"><div style="flex:1"><b>Nina M.</b><br><span style="font-size:12px;color:#888">8 mutual friends • Kigali</span></div><button class="followBtn" data-user="Nina M." onclick="toggleFollow(this,'Nina M.')">Follow</button></div>
-</div>
-<div class="card">
-<div class="flex"><img class="av myAvatar" src="https://i.pravatar.cc/100?img=47"><div style="flex:1"><b class="userNameTxt">Aline U.</b><br><span style="font-size:12px;color:#888">Kigali, Rwanda • 2h ago 📍</span></div><button class="followBtnSmall" data-user="Aline U." onclick="toggleFollow(this,'Aline U.')">Follow</button></div>
-<img class="post" src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800">
-<p>Vibes in Kigali with friends! ❤️ #Kigali #ExploreRwanda</p>
-<div class="flex" style="gap:14px">
-<button class="actionBtn" id="likeBtn-1" onclick="toggleLike(1,124,this)">❤️ <span id="likeCount-1">124</span></button>
-<button class="actionBtn" onclick="toggleComments(1)">💬 <span id="commentCount-1">3</span></button>
-<button class="actionBtn" onclick="sharePost('Aline U.')">↗ Share</button>
-<button class="actionBtn" onclick="savePost(this)">🔖</button>
-</div>
-<div class="commentsBox hidden" id="comments-1">
-<div id="commentList-1">
-<div class="commentRow"><img src="https://i.pravatar.cc/100?img=12"><div class="commentBubble"><b>Kevin R.</b><br>Wow, Kigali is beautiful! 😍</div></div>
-<div class="commentRow"><img src="https://i.pravatar.cc/100?img=32"><div class="commentBubble"><b>Davis K.</b><br>Next time mutwite! 🔥</div></div>
-<div class="commentRow"><img src="https://i.pravatar.cc/100?img=5"><div class="commentBubble"><b>Nina M.</b><br>Love this vibe ❤️</div></div>
-</div>
-<div class="commentInputRow"><img class="myAvatar" src="https://i.pravatar.cc/100?img=47" style="width:34px;height:34px;border-radius:50%;object-fit:cover"><input id="commentInput-1" placeholder="Andika comment yawe..."><button class="btn btn-grad" onclick="addComment(1)">Send</button></div>
-</div>
-</div>
-<div class="card">
-<div class="flex"><img class="av" src="https://i.pravatar.cc/100?img=12"><div style="flex:1"><b>Kevin R.</b><br><span style="font-size:12px;color:#888">Just discovered this amazing view! 🌄 #Kigali • 4h ago</span></div><button class="followBtnSmall" data-user="Kevin R." onclick="toggleFollow(this,'Kevin R.')">Follow</button></div>
-<img class="post" src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800">
-<div class="flex" style="gap:14px;margin-top:8px">
-<button class="actionBtn" id="likeBtn-2" onclick="toggleLike(2,89,this)">❤️ <span id="likeCount-2">89</span></button>
-<button class="actionBtn" onclick="toggleComments(2)">💬 <span id="commentCount-2">2</span></button>
-<button class="actionBtn" onclick="sharePost('Kevin R.')">↗ Share</button>
-<button class="actionBtn" onclick="savePost(this)">🔖</button>
-</div>
-<div class="commentsBox hidden" id="comments-2">
-<div id="commentList-2">
-<div class="commentRow"><img class="myAvatar" src="https://i.pravatar.cc/100?img=47"><div class="commentBubble"><b class="userNameTxt">Aline U.</b><br>Hehe ni hehe aha? 😍</div></div>
-<div class="commentRow"><img src="https://i.pravatar.cc/100?img=32"><div class="commentBubble"><b>Davis K.</b><br>Amazing view bro! 🌄</div></div>
-</div>
-<div class="commentInputRow"><img class="myAvatar" src="https://i.pravatar.cc/100?img=47" style="width:34px;height:34px;border-radius:50%;object-fit:cover"><input id="commentInput-2" placeholder="Andika comment yawe..."><button class="btn btn-grad" onclick="addComment(2)">Send</button></div>
-</div>
-</div>
-</div>
-
-<div id="settings" class="hidden">
-<div class="card">
-<div class="flex"><img class="myAvatar" src="https://i.pravatar.cc/100?img=47" style="width:56px;height:56px;border-radius:50%;object-fit:cover"><div style="flex:1"><b style="font-size:17px" class="userNameTxt">Aline U.</b><br><span style="font-size:12px;color:#888">📧 <span class="userEmailTxt">aline@gmail.com</span></span><br><span style="font-size:12px;color:#22c55e">● Logged in • Verified ✓</span></div><button class="btn btn-grad" style="width:auto;padding:8px 16px" onclick="showTab('profile',null)">View Profile</button></div>
-</div>
-<div class="card"><b>🎨 Appearance</b>
-<div class="setRow"><div class="setIcon" style="background:#1e293b;color:#fff">🌙</div><div style="flex:1"><b>Dark Mode</b><br><span style="font-size:12px;color:#888" id="darkStatus">Off - Light theme</span></div><div class="toggle" id="darkToggle" onclick="toggleDarkFromSettings()"></div></div>
-<div class="setRow"><div class="setIcon" style="background:#eff6ff">🌍</div><div style="flex:1"><b>Language</b><br><span style="font-size:12px;color:#888" id="langStatus">Kinyarwanda</span></div><span>›</span></div>
-<select id="langSelect" onchange="changeLanguage(this.value)"><option value="rw">🇷🇼 Kinyarwanda</option><option value="en">🇺🇸 English</option><option value="fr">🇫🇷 Français</option></select>
-</div>
-<div class="card"><b>🔔 Notifications & Privacy</b>
-<div class="setRow"><div class="setIcon" style="background:#fef3c7">🔔</div><div style="flex:1"><b>Push Notifications</b><br><span style="font-size:12px;color:#888" id="notifStatus">On - Receive all</span></div><div class="toggle" id="notifToggle" onclick="toggleSetting('notif',this)"></div></div>
-<div class="setRow"><div class="setIcon" style="background:#f0fdf4">🔒</div><div style="flex:1"><b>Private Account</b><br><span style="font-size:12px;color:#888" id="privateStatus">Off - Everyone can see</span></div><div class="toggle off" id="privateToggle" onclick="toggleSetting('private',this)"></div></div>
-<div class="setRow"><div class="setIcon" style="background:#fdf2f8">👁️</div><div style="flex:1"><b>Show Online Status</b><br><span style="font-size:12px;color:#888">Others can see you online</span></div><div class="toggle" id="onlineToggle" onclick="toggleSetting('online',this)"></div></div>
-</div>
-<div class="card"><b>👤 Account</b>
-<div class="setRow" onclick="openPhotoModal()"><div class="setIcon" style="background:#eff6ff">📸</div><div style="flex:1"><b>Change Profile Photo</b></div><span>›</span></div>
-<div class="setRow" onclick="editBio()"><div class="setIcon" style="background:#fef3c7">✏️</div><div style="flex:1"><b>Edit Bio</b><br><span style="font-size:12px;color:#888" id="bioSettings">Creator • Kigali 🇷🇼</span></div><span>›</span></div>
-<div class="setRow" onclick="changePassword()"><div class="setIcon" style="background:#fdf2f8">🔑</div><div style="flex:1"><b>Change Password</b><br><span style="font-size:12px;color:#888">Change your login password</span></div><span>›</span></div>
-<div class="setRow"><div class="setIcon" style="background:#f0f2f5">📧</div><div style="flex:1"><b>Email</b><br><span style="font-size:12px;color:#888" class="userEmailTxt">aline@gmail.com</span></div><span style="color:#22c55e;font-size:12px;font-weight:700">Verified ✓</span></div>
-</div>
-<div class="card">
-<button class="btn btn-grad" onclick="exportData()">📥 Download My Data</button>
-<button class="btn btn-grey" style="margin-top:10px" onclick="clearAllData()">🗑️ Clear All Data</button>
-<button class="btn btn-red" style="margin-top:10px" onclick="logoutUser()">🚪 Logout (<span class="userEmailTxt">aline@gmail.com</span>)</button>
-</div>
-<p style="text-align:center;font-size:12px;color:#888;padding:0 14px">SKYLATE © 2026 • Made with ❤️ in Kigali, Rwanda</p>
-</div>
-
-<div id="live" class="hidden">
-<div class="card"><div class="flex" style="justify-content:space-between"><div><b style="font-size:18px">🔴 Live Now</b><br><span style="font-size:12px;color:#888">3 people are live in Kigali</span></div><button class="btn btn-red" style="width:auto;padding:10px 18px" onclick="startMyLive()">📺 Go Live</button></div></div>
-<div class="liveCard" onclick="joinLive('Kevin R.','Kigali dance challenge 🔥','https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800')"><img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800"><div class="topLive"><span class="liveBadge"><span class="dot"></span>LIVE</span><span class="viewers">👁️ 1,248 watching</span></div><div class="ov"><div class="flex"><img class="av" src="https://i.pravatar.cc/100?img=12"><div><b>Kevin R.</b><br><span style="font-size:12px">Kigali dance challenge 🔥</span></div></div></div></div>
-<div class="liveCard" onclick="joinLive('Aline U.','Cooking Kigali food 🍲','https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800')"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800"><div class="topLive"><span class="liveBadge"><span class="dot"></span>LIVE</span><span class="viewers">👁️ 892 watching</span></div><div class="ov"><div class="flex"><img class="av myAvatar" src="https://i.pravatar.cc/100?img=47"><div><b class="userNameTxt">Aline U.</b><br><span style="font-size:12px">Cooking Kigali food 🍲</span></div></div></div></div>
-</div>
-
-<div id="liveRoom">
-<img id="liveImg" src="">
-<div class="topL"><img id="liveUserImg" style="width:38px;height:38px;border-radius:50%;object-fit:cover"><div><b id="liveUserName">Kevin R.</b><br><span style="font-size:12px">Kigali, Rwanda</span></div><span class="liveBadge" style="margin-left:8px"><span class="dot"></span>LIVE</span><span class="viewers" style="margin-left:auto" id="liveViewers">👁️ 1,248</span><span style="font-size:22px;cursor:pointer;margin-left:8px" onclick="leaveLive()">✕</span></div>
-<div class="comments" id="liveComments"><div class="cmt"><b>Aline U.:</b> This is fire 🔥</div><div class="cmt"><b>Davis K.:</b> Kigali represent! 🇷🇼</div></div>
-<div class="inputRow"><input id="liveInput" placeholder="Say something..."><button class="btn btn-grad" style="width:auto;padding:10px 16px" onclick="sendLiveComment()">Send</button><button class="btn btn-red" style="width:auto;padding:10px 14px;font-size:18px" onclick="alert('❤️ Wayohereje urukundo!')">❤️</button></div>
-</div>
-
-<div id="storyViewer">
-<div class="bar"><div id="storyBar"></div></div>
-<div class="top"><img id="storyUserImg" style="width:38px;height:38px;border-radius:50%;object-fit:cover"><b id="storyUserName">Aline U.</b><span style="font-size:12px;opacity:.8">2h ago</span><span style="margin-left:auto;font-size:22px;cursor:pointer" onclick="closeStory()">✕</span></div>
-<img id="storyMainImg" src="">
-<div style="position:relative;z-index:2;padding:14px;color:#fff;font-weight:700;text-shadow:0 2px 8px #000" id="storyCaption"></div>
-<div class="bottom"><input placeholder="Reply to story..."><span style="font-size:24px;cursor:pointer" onclick="alert('❤️ Story yakunzwe!')">❤️</span><span style="font-size:24px;cursor:pointer" onclick="alert('↗ Story yoherejwe!')">↗</span></div>
-</div>
-
-<div id="videos" class="hidden">
-<div class="videoCard"><img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800"><div class="side"><div>💙</div>1.2k<div>💬</div>142<div>↗</div>38<div>🔖</div>27</div><div class="ov"><div style="background:rgba(0,0,0,.6);padding:8px;border-radius:10px;margin-bottom:8px">💬 Live Comments • 28 live<br><b>Aline U.:</b> This is fire 🔥<br><b>Davis K.:</b> Kigali represent! 🇷🇼</div><b>@kevin.rw</b><br>Kigali dance challenge 🔥 #DanceChallenge #Kigali<br>🎵 Original sound - kevin.rw</div></div>
-</div>
-
-<div id="search" class="hidden">
-<div class="search">🔍 <input class="searchInput" id="mainSearch" placeholder="Search people, posts, videos..." oninput="doSearch(this.value)"><span id="clearSearch" style="cursor:pointer;display:none" onclick="clearSearch()">✕</span></div>
-<div style="padding:0 12px 8px"><b style="font-size:13px">🔥 Trending:</b><br>
-<span class="searchTag" onclick="quickSearch('Kigali',this)">#Kigali</span>
-<span class="searchTag" onclick="quickSearch('Dance',this)">#Dance</span>
-<span class="searchTag" onclick="quickSearch('Food',this)">#Food</span>
-<span class="searchTag" onclick="quickSearch('Kevin',this)">Kevin</span>
-<span class="searchTag" onclick="quickSearch('Live',this)">🔴 Live</span>
-</div>
-<div id="searchResults"></div>
-<div id="searchDefault">
-<div class="card"><b>👥 People - <span id="followingCountTxt">0 Following</span></b>
-<div class="flex searchResult" style="margin-top:12px" data-search="Aline U. aline Kigali Creator Dance Food"><img class="av myAvatar" src="https://i.pravatar.cc/100?img=47"><div style="flex:1"><b class="userNameTxt">Aline U.</b><br><span style="font-size:12px;color:#888">@aline.u • 24.5K followers • Kigali</span></div><button class="followBtn" data-user="Aline U." onclick="toggleFollow(this,'Aline U.')">Follow</button></div>
-<div class="flex searchResult" style="margin-top:12px" data-search="Kevin R. kevin Kigali Dance"><img class="av" src="https://i.pravatar.cc/100?img=12"><div style="flex:1"><b>Kevin R.</b><br><span style="font-size:12px;color:#888">@kevin.rw • 12.3K followers • Kigali • Dance</span></div><button class="followBtn" data-user="Kevin R." onclick="toggleFollow(this,'Kevin R.')">Follow</button></div>
-<div class="flex searchResult" style="margin-top:12px" data-search="Davis K. davis Kigali"><img class="av" src="https://i.pravatar.cc/100?img=32"><div style="flex:1"><b>Davis K.</b><br><span style="font-size:12px;color:#888">@davis.k • 8.9K followers • Kigali</span></div><button class="followBtn" data-user="Davis K." onclick="toggleFollow(this,'Davis K.')">Follow</button></div>
-<div class="flex searchResult" style="margin-top:12px" data-search="Nina M. nina Kigali Food"><img class="av" src="https://i.pravatar.cc/100?img=5"><div style="flex:1"><b>Nina M.</b><br><span style="font-size:12px;color:#888">@nina.m • 15.2K followers • Kigali • Food</span></div><button class="followBtn" data-user="Nina M." onclick="toggleFollow(this,'Nina M.')">Follow</button></div>
-</div>
-<div class="card"><b>🎬 Videos</b>
-<div class="searchResult" style="margin-top:10px" data-search="Dance challenge Kevin Kigali Dance" onclick="showTab('videos',null)"><img class="post" style="margin:0;height:140px" src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600"><b>Dance challenge - Kevin R.</b><br><span style="font-size:12px;color:#888">1.2k views • #Dance #Kigali</span></div>
-<div class="searchResult" style="margin-top:10px" data-search="Kigali Street Food Food Nina Kigali" onclick="showTab('videos',null)"><img class="post" style="margin:0;height:140px" src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600"><b>Kigali Street Food - Nina M.</b><br><span style="font-size:12px;color:#888">892 views • #Food #Kigali</span></div>
-</div>
-</div>
-</div>
-
-<div id="chat" class="hidden">
-<div class="card"><b>Messages</b> <span style="float:right;color:#2563eb;font-size:13px" onclick="alert('New Chat - hitamo umuntu muri Search!')">✏️ New Chat</span>
-<div class="chatItem" onclick="openChat('Davis K.','https://i.pravatar.cc/100?img=32')"><div class="avWrap"><img class="av" src="https://i.pravatar.cc/100?img=32"><span class="onlineDot"></span></div><div style="flex:1"><b>Davis K.</b><br><span style="font-size:13px;color:#888" id="last-Davis K.">Bro, that dance was 🔥</span></div><div style="text-align:right"><span style="font-size:12px;color:#888">2m</span><br><span class="unreadBadge" id="unread-Davis K.">2</span></div></div>
-<div class="chatItem" onclick="openChat('Nina M.','https://i.pravatar.cc/100?img=5')"><div class="avWrap"><img class="av" src="https://i.pravatar.cc/100?img=5"><span class="onlineDot"></span></div><div style="flex:1"><b>Nina M.</b><br><span style="font-size:13px;color:#888" id="last-Nina M.">See you tomorrow in Kigali?</span></div><div style="text-align:right"><span style="font-size:12px;color:#888">1h</span><br><span class="unreadBadge" id="unread-Nina M.">1</span></div></div>
-<div class="chatItem" onclick="openChat('Kevin R.','https://i.pravatar.cc/100?img=12')"><div class="avWrap"><img class="av" src="https://i.pravatar.cc/100?img=12"></div><div style="flex:1"><b>Kevin R.</b><br><span style="font-size:13px;color:#888" id="last-Kevin R.">Check my new video! 🔥</span></div><div style="text-align:right"><span style="font-size:12px;color:#888">3h</span></div></div>
-<div class="chatItem" onclick="openChat('Eric T.','https://i.pravatar.cc/100?img=68')"><div class="avWrap"><img class="av" src="https://i.pravatar.cc/100?img=68"></div><div style="flex:1"><b>Eric T.</b><br><span style="font-size:13px;color:#888" id="last-Eric T.">New beat is ready 🎵</span></div><div style="text-align:right"><span style="font-size:12px;color:#888">1d</span></div></div>
-</div>
-</div>
-
-<div id="create" class="hidden">
-<div class="card">
-<div class="flex" style="justify-content:space-between"><span>←</span><b style="font-size:18px">Create Post</b><span style="background:#dbeafe;padding:6px 14px;border-radius:14px;color:#2563eb;font-weight:800">Post</span></div>
-<div class="flex" style="justify-content:center;gap:30px;margin:14px 0"><b style="color:#2563eb;border-bottom:3px solid #2563eb;padding-bottom:4px">PHOTO</b><b style="color:#888">VIDEO</b><b style="color:#e11d2e;cursor:pointer" onclick="startMyLive()">🔴 LIVE</b></div>
-<div class="upload" onclick="document.getElementById('fileInput').click()"><div style="font-size:36px;background:#dbeafe;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto">+</div><b>Tap to upload photo or video</b><br><span style="font-size:13px;color:#666">Add photos from your gallery or record a new video</span><input type="file" id="fileInput" accept="image/*,video/*" style="display:none" onchange="previewFile(this)"><img id="previewImg" class="post hidden"></div>
-<b>Filters</b><span style="float:right;color:#2563eb;font-size:13px">See all</span>
-<div class="filters"><div><img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=200"><br><span>Original</span></div><div><img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=200" style="filter:saturate(1.8)"><br><span>Vivid</span></div><div><img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=200" style="filter:hue-rotate(180deg)"><br><span>Cool</span></div><div><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200" style="filter:sepia(.5)"><br><span>Warm</span></div><div><img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=200" style="filter:grayscale(1)"><br><span>B&W</span></div></div>
-<b>🔥 Trending Music</b><span style="float:right;color:#2563eb;font-size:13px">See all</span>
-<div class="music">🔥<div><b>Kigali Vibes - Afrobeat mix</b><br><span style="font-size:12px;color:#888">Aline U. • 12.5k uses • 0:15</span></div><button onclick="selectMusic('Kigali Vibes')">+</button></div>
-<div class="music">🎵<div><b>Rwanda Sunset • Chill Lofi</b><br><span style="font-size:12px;color:#888">Davis K. • 9.2k uses • 0:30</span></div><button onclick="selectMusic('Rwanda Sunset')">+</button></div>
-<div class="flex"><span>🔊</span><input type="range" id="vol" min="0" max="100" value="60" oninput="document.getElementById('volTxt').innerText=this.value+'%'"><b id="volTxt">60%</b><span>🔇</span></div><p style="font-size:12px;color:#888;margin:0">Adjust music volume • <span id="chosenMusic">No music selected</span></p>
-<b>Caption</b><textarea placeholder="Write a caption... #Kigali #ExploreRwanda"></textarea>
-<button class="btn btn-grad" onclick="alert('✅ Post yashyizwe kuri SKYLATE!');addNotif('📱','Post yawe yashyizwe kuri SKYLATE!','Just now')">Post to SKYLATE 🚀</button>
-<button class="btn btn-red" style="margin-top:10px" onclick="startMyLive()">🔴 Go Live Now</button>
-</div>
-</div>
-
-<div id="profile" class="hidden">
-<div class="profileHeader">
-<div class="profilePicWrap">
-<img class="profilePic" id="profilePicMain" src="https://i.pravatar.cc/200?img=47" onclick="openPhotoModal()">
-<span class="camBadge" onclick="openPhotoModal()">📷</span>
-</div>
-<h2 style="margin:10px 0 2px"><span class="userNameTxt">Aline U.</span> <span style="font-size:14px;cursor:pointer" onclick="editName()">✏️</span></h2>
-<span style="opacity:.85">@<span class="userHandleTxt">aline.u</span></span><br>
-<span style="font-size:12px;opacity:.85">📧 <span class="userEmailTxt">aline@gmail.com</span> • Verified ✓</span>
-<p style="font-size:13px;opacity:.92;margin:8px 0 0" id="myBio">Creator • Kigali, Rwanda 🇷🇼 | Dance • Food • Life in Kigali <span style="cursor:pointer" onclick="editBio()">✏️</span></p>
-</div>
-<div class="statsCard"><div class="stat"><b>1,248</b><br><span style="font-size:12px;color:#888">Posts</span></div><div class="stat"><b id="myFollowers">24.5K</b><br><span style="font-size:12px;color:#888">Followers</span></div><div class="stat"><b id="myFollowing">892</b><br><span style="font-size:12px;color:#888">Following</span></div></div>
-<div class="flex" style="padding:0 14px"><button class="btn btn-grad" style="flex:1" onclick="openPhotoModal()">📸 Change Photo</button><button class="btn btn-grey" style="flex:1" onclick="editBio()">✏️ Edit Bio</button></div>
-<div class="flex" style="padding:10px 14px 0"><button class="btn btn-grey" style="flex:1" onclick="showTab('settings',null)">⚙️ Open Settings</button></div>
-<div class="card" style="margin-top:14px"><div class="flex" style="justify-content:space-around;border-bottom:2px solid #eee;padding-bottom:8px"><b style="color:#2563eb">POSTS</b><span style="color:#888">VIDEOS</span><span style="color:#888">LIKED</span></div><div class="grid3"><img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=300"><img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=300"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300"><img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300"><img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=300"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300"></div></div>
-<div class="card"><b>👥 Following - <span id="followingListCount">0</span></b><div id="followingList" style="font-size:13px;color:#888;margin-top:6px">Nta muntu urakurikira - Kanda Follow hejuru!</div></div>
-</div>
-
-<div id="report" class="hidden">
-<div class="card"><h2>🚩 SKYLATE Report All</h2><p style="font-size:13px;color:#666">Report someone - Confidential</p><label><b>Who are you reporting?</b></label><select><option>Select user...</option><option>Nina M.</option><option>Kevin R.</option><option>Eric T.</option><option>Aline U.</option><option>Other...</option></select><label><b>Reason:</b></label><div class="check"><input type="checkbox"> Harassment / Bullying</div><div class="check"><input type="checkbox"> Hateful content</div><div class="check"><input type="checkbox"> Spam / Scam</div><div class="check"><input type="checkbox"> Copyright / Stole my photo</div><div class="check"><input type="checkbox"> Other bad behavior</div><label><b>Describe what happened...</b></label><textarea placeholder="Andika ibyabaye neza..."></textarea><div style="background:#f0fff4;border:1px solid #22c55e;padding:12px;border-radius:12px"><div class="check"><input type="checkbox" checked><b>🕵️ Submit anonymously</b></div><p style="font-size:13px;color:#666;margin:0">Your identity will be hidden</p></div><div class="flex" style="margin-top:12px"><button class="btn btn-grey" style="flex:1">Cancel</button><button class="btn btn-red" style="flex:1" onclick="alert('✅ Report yoherejwe! Murakoze.')">Submit Report</button></div></div>
-</div>
-
-<div id="ownerLogin" class="card hidden"><h2>🔒 Secret Access</h2><input type="password" id="ownerPassword" placeholder="Secret Password"><button class="btn" style="background:#111;color:#fff" onclick="if(document.getElementById('ownerPassword').value==='SKYLATE2026'){document.getElementById('ownerLogin').classList.add('hidden');document.getElementById('ownerDashboard').classList.remove('hidden')}else{alert('Access Denied')}">Enter</button></div>
-<div id="ownerDashboard" class="card hidden"><h2>🔐 Secret Dashboard</h2><p>Owner Only - <span class="userEmailTxt">aline@gmail.com</span></p><button class="btn btn-grey" onclick="document.getElementById('ownerDashboard').classList.add('hidden')">Logout</button></div>
-
-<div class="bottomNav"><button class="active" onclick="showTab('social',this)">🏠</button><button onclick="showTab('videos',this)">🎬</button><button class="plusBtn" onclick="showTab('create',this)">+</button><button onclick="showTab('chat',this)">💬</button><button onclick="showTab('profile',this)">👤</button></div>
-</div>
-
 <script>
-let storyTimer, liveTimer, liveCount=1248;
-let liveNames=['Nina M.','Eric T.','Davis K.','Aline U.','Kevin R.'];
-let liveTexts=['Wow! 🔥','Kigali represent! 🇷🇼','I love this! ❤️','Amazing!! 😍','Tell us more!','🔥🔥🔥','So cool!'];
-let notifCount=3;
-let followingSet=new Set();
-try{ followingSet=new Set(JSON.parse(localStorage.getItem('skylate_following')||'[]')); }catch(e){}
-let myFollowingBase=892;
-let tempPhoto=null;
-let myPhoto='https://i.pravatar.cc/200?img=47';
-try{ myPhoto=localStorage.getItem('skylate_photo')||myPhoto; }catch(e){}
-let currentChat=null, currentChatImg='';
-let chatData={};
-try{ chatData=JSON.parse(localStorage.getItem('skylate_chats')||'{}'); }catch(e){ chatData={}; }
-let defaultChats={
-'Davis K.':[{who:'them',text:'Bro, that dance was 🔥',time:'2m ago'},{who:'them',text:'Uraza ejo muri Kigali?',time:'2m ago'}],
-'Nina M.':[{who:'them',text:'See you tomorrow in Kigali?',time:'1h ago'}],
-'Kevin R.':[{who:'them',text:'Check my new video! 🔥',time:'3h ago'}],
-'Eric T.':[{who:'them',text:'New beat is ready 🎵',time:'1d ago'}]
+// ============ CONFIG YAWE - SKYLATE - YUZUYE! ============
+const firebaseConfig = {
+  apiKey: "AIzaSyCFoedIuv_MpjAAEV4bDtKi-SL2DFihVUQ",
+  authDomain: "skylate-3c7f4.firebaseapp.com",
+  projectId: "skylate-3c7f4",
+  storageBucket: "skylate-3c7f4.firebasestorage.app",
+  messagingSenderId: "865335957961",
+  appId: "1:865335957961:web:550db0a7fda0556c167018",
+  measurementId: "G-ZYDW583WE2"
 };
-let chatReplies={
-'Davis K.':['Yego bro! 🔥','Ni byiza cyane!','Ejo turahura muri Kigali? 😊','Haha 😂','Urakoze!','Byiza! Tuzakora collab?'],
-'Nina M.':['Yego! Ndaje ejo 😊','Sawa!','Urakoze Nina ❤️','Tuzahura he?'],
-'Kevin R.':['Wow! Ndayireba ubu 🔥','Amazing bro!','Dance yawe ni 🔥🔥'],
-'Eric T.':['Beat ni 🔥🔥','Ndayikunda! 🎵','Ohereza full version!']
-};
-let settings={notif:true,private:false,online:true,comment:true,lang:'rw'};
-try{ settings=Object.assign(settings, JSON.parse(localStorage.getItem('skylate_settings')||'{}')); }catch(e){}
-// AUTH - LOGIN WITH EMAIL
-let currentUser=null;
-let users={};
-try{ users=JSON.parse(localStorage.getItem('skylate_users')||'{}'); }catch(e){ users={}; }
-if(!users['aline@gmail.com']){ users['aline@gmail.com']={name:'Aline U.',email:'aline@gmail.com',password:'1234',handle:'aline.u'}; try{localStorage.setItem('skylate_users',JSON.stringify(users));}catch(e){} }
-function showAuthError(msg){ var e=document.getElementById('authError'); e.innerText=msg; e.style.display='block'; document.getElementById('authOk').style.display='none'; }
-function showAuthOk(msg){ var e=document.getElementById('authOk'); e.innerText=msg; e.style.display='block'; document.getElementById('authError').style.display='none'; }
-function hideAuthMsg(){ document.getElementById('authError').style.display='none'; document.getElementById('authOk').style.display='none'; }
-function switchAuth(mode){
-  hideAuthMsg();
-  document.getElementById('tabLogin').classList.toggle('active', mode==='login');
-  document.getElementById('tabSignup').classList.toggle('active', mode==='signup');
-  document.getElementById('loginForm').classList.toggle('hidden', mode!=='login');
-  document.getElementById('signupForm').classList.toggle('hidden', mode!=='signup');
-}
-function isValidEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
-function doLogin(){
-  var email=document.getElementById('loginEmail').value.trim().toLowerCase();
-  var pass=document.getElementById('loginPassword').value;
-  var remember=document.getElementById('rememberMe').checked;
-  if(!email||!pass){ showAuthError('⚠️ Andika Email na Password!'); return; }
-  if(!isValidEmail(email)){ showAuthError('⚠️ Email ntabwo ariyo! Reba: example@gmail.com'); return; }
-  var user=users[email];
-  if(!user){ showAuthError('❌ Nta account ifite iyi email! Kanda Sign Up ukore account.'); return; }
-  if(user.password!==pass){ showAuthError('❌ Password ntabwo ariyo! Gerageza nanone cyangwa kanda Forgot Password.'); return; }
-  currentUser=user;
-  if(remember){ try{ localStorage.setItem('skylate_session', JSON.stringify({email:email})); }catch(e){} }
-  else { try{ sessionStorage.setItem('skylate_session', JSON.stringify({email:email})); }catch(e){} }
-  applyUser(); hideLogin(); showAuthOk('');
-  setTimeout(()=>{ alert('🎉 Murakaza neza, '+user.name+'!\nLogged in as '+email); },300);
-}
-function doSignup(){
-  var name=document.getElementById('signupName').value.trim();
-  var email=document.getElementById('signupEmail').value.trim().toLowerCase();
-  var pass=document.getElementById('signupPassword').value;
-  var pass2=document.getElementById('signupPassword2').value;
-  if(!name||!email||!pass){ showAuthError('⚠️ Uzuza byose: Izina, Email, Password!'); return; }
-  if(!isValidEmail(email)){ showAuthError('⚠️ Email ntabwo ariyo!'); return; }
-  if(pass.length<4){ showAuthError('⚠️ Password igomba kuba nibura inyuguti 4!'); return; }
-  if(pass!==pass2){ showAuthError('⚠️ Passwords ntizihuye!'); return; }
-  if(users[email]){ showAuthError('❌ Iyi email isanzwe ifite account! Kanda Login.'); return; }
-  var handle=email.split('@')[0].replace(/[^a-z0-9]/g,'.').toLowerCase();
-  var user={name:name,email:email,password:pass,handle:handle};
-  users[email]=user; try{ localStorage.setItem('skylate_users',JSON.stringify(users)); }catch(e){}
-  currentUser=user;
-  try{ localStorage.setItem('skylate_session', JSON.stringify({email:email})); }catch(e){}
-  applyUser(); hideLogin();
-  setTimeout(()=>{ alert('🎉 Account yawe yarakozwe, '+name+'!\nWelcome to SKYLATE! 🇷🇼'); },300);
-}
-function forgotPassword(){
-  var email=prompt('Andika Email yawe:', document.getElementById('loginEmail').value||'');
-  if(!email) return;
-  email=email.trim().toLowerCase();
-  var user=users[email];
-  if(!user){ showAuthError('❌ Nta account ifite iyi email!'); return; }
-  var newPass=prompt('Password yawe ni: '+user.password+'\n\nAndika password nshya (cyangwa Cancel):', user.password);
-  if(newPass && newPass.length>=4){ user.password=newPass; users[email]=user; try{ localStorage.setItem('skylate_users',JSON.stringify(users)); }catch(e){} showAuthOk('✅ Password yahindutse! Injira na password nshya.'); document.getElementById('loginPassword').value=newPass; }
-  else if(newPass){ showAuthError('⚠️ Password igomba kuba nibura 4!'); }
-}
-function hideLogin(){ document.getElementById('loginScreen').style.display='none'; document.getElementById('appWrap').style.display='block'; }
-function showLogin(){ document.getElementById('loginScreen').style.display='flex'; document.getElementById('appWrap').style.display='none'; }
-function applyUser(){
-  if(!currentUser) return;
-  document.querySelectorAll('.userNameTxt').forEach(el=>el.innerText=currentUser.name);
-  document.querySelectorAll('.userEmailTxt').forEach(el=>el.innerText=currentUser.email);
-  document.querySelectorAll('.userHandleTxt').forEach(el=>el.innerText=currentUser.handle);
-}
-function checkSession(){
-  var sess=null;
-  try{ sess=JSON.parse(localStorage.getItem('skylate_session')||sessionStorage.getItem('skylate_session')||'null'); }catch(e){}
-  if(sess && users[sess.email]){ currentUser=users[sess.email]; applyUser(); hideLogin(); return true; }
-  showLogin(); return false;
-}
-function showTab(id,btn){ ['social','videos','live','search','chat','create','profile','settings','report'].forEach(x=>document.getElementById(x).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.bottomNav button').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); window.scrollTo(0,0); }
-function selectMusic(name){ document.getElementById('chosenMusic').innerText='Selected: '+name+' 🎵'; alert('🎵 '+name+' yatoranyijwe!'); }
-function previewFile(input){ if(input.files&&input.files[0]){ const r=new FileReader(); r.onload=e=>{ const im=document.getElementById('previewImg'); im.src=e.target.result; im.classList.remove('hidden'); }; r.readAsDataURL(input.files[0]); } }
-function toggleDark(){ document.body.classList.toggle('dark'); var isDark=document.body.classList.contains('dark'); document.getElementById('darkBtn').innerText=isDark?'☀️':'🌙'; try{localStorage.setItem('skylate_dark',isDark?'1':'0')}catch(e){} updateSettingsUI(); }
-function toggleDarkFromSettings(){ toggleDark(); }
-try{ if(localStorage.getItem('skylate_dark')==='1'){ document.body.classList.add('dark'); document.getElementById('darkBtn').innerText='☀️'; } }catch(e){}
-function openStory(name,img,caption){ document.getElementById('storyUserName').innerText=name; document.getElementById('storyMainImg').src=img; document.getElementById('storyCaption').innerText=caption; document.getElementById('storyViewer').style.display='flex'; var bar=document.getElementById('storyBar'); bar.style.transition='none'; bar.style.width='0%'; setTimeout(()=>{ bar.style.transition='width 5s linear'; bar.style.width='100%'; },50); clearTimeout(storyTimer); storyTimer=setTimeout(closeStory,5000); }
-function closeStory(){ document.getElementById('storyViewer').style.display='none'; clearTimeout(storyTimer); }
-function joinLive(name,title,img){ document.getElementById('liveUserName').innerText=name+' - '+title; document.getElementById('liveImg').src=img; document.getElementById('liveRoom').style.display='flex'; liveCount=1248; document.getElementById('liveViewers').innerText='👁️ '+liveCount.toLocaleString(); clearInterval(liveTimer); liveTimer=setInterval(()=>{ liveCount+=Math.floor(Math.random()*5)+1; document.getElementById('liveViewers').innerText='👁️ '+liveCount.toLocaleString(); if(Math.random()>0.5){ var c=document.getElementById('liveComments'); var d=document.createElement('div'); d.className='cmt'; d.innerHTML='<b>'+liveNames[Math.floor(Math.random()*liveNames.length)]+':</b> '+liveTexts[Math.floor(Math.random()*liveTexts.length)]; c.appendChild(d); if(c.children.length>4) c.removeChild(c.firstChild); } },3000); }
-function leaveLive(){ document.getElementById('liveRoom').style.display='none'; clearInterval(liveTimer); }
-function sendLiveComment(){ var inp=document.getElementById('liveInput'); if(!inp.value.trim()) return; var c=document.getElementById('liveComments'); var d=document.createElement('div'); d.className='cmt'; d.innerHTML='<b>You:</b> '+inp.value; c.appendChild(d); if(c.children.length>4) c.removeChild(c.firstChild); inp.value=''; }
-function startMyLive(){ var title=prompt('Andika izina rya Live yawe:','Kigali vibes live! 🎉'); if(title===null) return; joinLive('You ('+(currentUser?currentUser.name:'Aline U.')+')',title,'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800'); alert('🔴 Live yawe yatangiye! Abantu barimo kukureba ubu!'); addNotif('🔴','Live yawe yatangiye! Abantu barimo kukureba','Just now'); }
-function toggleComments(id){ document.getElementById('comments-'+id).classList.toggle('hidden'); }
-function toggleLike(id,base,btn){ var liked=btn.classList.contains('liked'); var el=document.getElementById('likeCount-'+id); var cur=parseInt(el.innerText); if(liked){ btn.classList.remove('liked'); el.innerText=cur-1; btn.innerHTML='🤍 <span id="likeCount-'+id+'">'+(cur-1)+'</span>'; } else { btn.classList.add('liked'); el.innerText=cur+1; btn.innerHTML='❤️ <span id="likeCount-'+id+'">'+(cur+1)+'</span>'; addNotif('❤️','Wakunze post','Just now'); } }
-function addComment(id){ var inp=document.getElementById('commentInput-'+id); var text=inp.value.trim(); if(!text) return; var list=document.getElementById('commentList-'+id); var row=document.createElement('div'); row.className='commentRow'; row.innerHTML='<img src="'+myPhoto+'"><div class="commentBubble"><b>You ('+(currentUser?currentUser.name:'Aline U.')+')</b><br>'+text.replace(/</g,'&lt;')+'</div>'; list.appendChild(row); inp.value=''; var cc=document.getElementById('commentCount-'+id); cc.innerText=parseInt(cc.innerText)+1; addNotif('💬','Wagize comment: "'+text.substring(0,30)+'"','Just now'); try{ var saved=JSON.parse(localStorage.getItem('comments-'+id)||'[]'); saved.push(text); localStorage.setItem('comments-'+id,JSON.stringify(saved)); }catch(e){} }
-function sharePost(name){ alert('↗ Post ya '+name+' yoherejwe!'); }
-function savePost(btn){ if(btn.innerText==='🔖'){ btn.innerText='📌'; alert('📌 Post yabikwe!'); } else { btn.innerText='🔖'; } }
-function openNotif(){ if(!settings.notif){ alert('🔕 Notifications zifunze muri Settings! Fungura uzibone.'); return; } document.getElementById('notifPanel').style.display='block'; }
-function closeNotif(){ document.getElementById('notifPanel').style.display='none'; }
-function markAllRead(){ document.querySelectorAll('.notifItem.unread').forEach(e=>{ e.classList.remove('unread'); var d=e.querySelector('.dotBlue'); if(d) d.remove(); }); notifCount=0; updateBell(); document.getElementById('unreadTxt').innerText='No new notifications'; }
-function updateBell(){ var b=document.getElementById('bellBadge'); if(notifCount<=0||!settings.notif){ b.style.display='none'; } else { b.style.display='flex'; b.innerText=notifCount; } }
-function addNotif(icon,text,time){ if(!settings.notif && icon!=='⚙️') return; var list=document.getElementById('notifList'); var div=document.createElement('div'); div.className='notifItem unread'; div.innerHTML='<div class="icon">'+icon+'</div><div style="flex:1"><b>SKYLATE</b> '+text+'<br><span style="font-size:12px;color:#888">• '+time+'</span></div><span class="dotBlue"></span>'; list.prepend(div); notifCount++; updateBell(); document.getElementById('unreadTxt').innerText=notifCount+' new notifications'; }
-function toggleFollow(btn,name){
-  var isFollowing = followingSet.has(name);
-  if(isFollowing){ followingSet.delete(name); document.querySelectorAll('[data-user="'+name+'"]').forEach(b=>{ b.classList.remove('following'); b.innerText='Follow'; }); }
-  else { followingSet.add(name); document.querySelectorAll('[data-user="'+name+'"]').forEach(b=>{ b.classList.add('following'); b.innerText='Following ✓'; }); addNotif('👥','Ukurikiye '+name+'! Ubu uzabona ibyabo','Just now'); }
-  try{ localStorage.setItem('skylate_following', JSON.stringify([...followingSet])); }catch(e){}
-  updateFollowUI();
-}
-function updateFollowUI(){
-  document.querySelectorAll('[data-user]').forEach(b=>{ var u=b.getAttribute('data-user'); if(followingSet.has(u)){ b.classList.add('following'); b.innerText='Following ✓'; } else { b.classList.remove('following'); b.innerText='Follow'; } });
-  var total = myFollowingBase + followingSet.size;
-  document.getElementById('myFollowing').innerText = total.toLocaleString();
-  document.getElementById('followingCountTxt').innerText = followingSet.size + ' Following';
-  document.getElementById('followingListCount').innerText = followingSet.size;
-  var listEl=document.getElementById('followingList');
-  if(followingSet.size===0){ listEl.innerHTML='Nta muntu urakurikira - Kanda Follow hejuru!'; }
-  else { listEl.innerHTML = [...followingSet].map(n=>'✅ '+n).join('<br>'); }
-}
-function followUser(el,name){ toggleFollow(el,name); }
-function openPhotoModal(){ document.getElementById('photoPreview').src=myPhoto; document.getElementById('photoModal').style.display='flex'; }
-function closePhotoModal(){ document.getElementById('photoModal').style.display='none'; }
-function changeProfilePhoto(input){
-  if(input.files && input.files[0]){
-    var reader=new FileReader();
-    reader.onload=function(e){ tempPhoto=e.target.result; document.getElementById('photoPreview').src=tempPhoto; document.getElementById('profilePicMain').src=tempPhoto; document.querySelectorAll('.myAvatar').forEach(img=>img.src=tempPhoto); };
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-function saveProfilePhoto(){
-  if(tempPhoto){ myPhoto=tempPhoto; try{ localStorage.setItem('skylate_photo', myPhoto); }catch(e){ alert('Ifoto nini cyane, gerageza ntoya'); } }
-  applyPhoto(); closePhotoModal(); addNotif('📸','Profile photo yawe yahindutse! 🎉','Just now'); alert('✅ Profile photo yahindutse!');
-}
-function removeProfilePhoto(){
-  myPhoto='https://i.pravatar.cc/200?img=47'; tempPhoto=null;
-  try{ localStorage.removeItem('skylate_photo'); }catch(e){}
-  applyPhoto(); closePhotoModal(); alert('🗑️ Profile photo yasubijwe isanzwe');
-}
-function applyPhoto(){
-  document.getElementById('profilePicMain').src=myPhoto;
-  document.getElementById('photoPreview').src=myPhoto;
-  document.querySelectorAll('.myAvatar').forEach(img=>img.src=myPhoto);
-}
-function editBio(){
-  var bio=document.getElementById('myBio');
-  var n=prompt('Andika Bio nshya yawe:', bio.innerText.replace(' ✏️',''));
-  if(n){ bio.innerHTML=n+' <span style="cursor:pointer" onclick="editBio()">✏️</span>'; document.getElementById('bioSettings').innerText=n; try{ localStorage.setItem('skylate_bio', n); }catch(e){} addNotif('✏️','Bio yawe yahindutse','Just now'); }
-}
-function editName(){
-  var n=prompt('Andika izina ryawe rishya:', currentUser?currentUser.name:'Aline U.');
-  if(n && currentUser){ currentUser.name=n; users[currentUser.email]=currentUser; try{ localStorage.setItem('skylate_users',JSON.stringify(users)); }catch(e){} applyUser(); alert('✅ Izina ryahindutse riba: '+n); }
-}
-function getChat(name){ if(!chatData[name]){ chatData[name]=JSON.parse(JSON.stringify(defaultChats[name]||[])); } return chatData[name]; }
-function saveChats(){ try{ localStorage.setItem('skylate_chats', JSON.stringify(chatData)); }catch(e){} }
-function openChat(name,img){
-  currentChat=name; currentChatImg=img;
-  document.getElementById('chatHeadName').innerText=name;
-  document.getElementById('chatHeadImg').src=img;
-  document.getElementById('chatHeadStatus').innerText=settings.online?'● Online • Active now':'● Offline';
-  document.getElementById('typingTxt').innerText=name+' is typing...';
-  document.getElementById('typingTxt').classList.add('hidden');
-  renderChat();
-  document.getElementById('chatRoom').style.display='flex';
-  var ub=document.getElementById('unread-'+name); if(ub) ub.style.display='none';
-  document.getElementById('chatInput').focus();
-}
-function closeChat(){ document.getElementById('chatRoom').style.display='none'; currentChat=null; }
-function renderChat(){
-  var body=document.getElementById('chatBody'); body.innerHTML='';
-  getChat(currentChat).forEach(m=>{
-    var div=document.createElement('div'); div.className='msg '+(m.who==='me'?'me':'them');
-    div.innerHTML=m.text.replace(/</g,'&lt;')+'<small>'+(m.time||'Just now')+(m.who==='me'?' ✓✓':'')+'</small>';
-    body.appendChild(div);
-  });
-  body.scrollTop=body.scrollHeight;
-}
-function sendChat(){
-  var inp=document.getElementById('chatInput'); var text=inp.value.trim(); if(!text||!currentChat) return;
-  var msgs=getChat(currentChat);
-  msgs.push({who:'me',text:text,time:'Just now'}); saveChats(); renderChat(); inp.value='';
-  var lastEl=document.getElementById('last-'+currentChat); if(lastEl) lastEl.innerText='You: '+text;
-  setTimeout(()=>{ if(currentChat) document.getElementById('typingTxt').classList.remove('hidden'); },600);
-  setTimeout(()=>{
-    document.getElementById('typingTxt').classList.add('hidden');
-    if(!currentChat) return;
-    var replies=chatReplies[currentChat]||['Sawa! 😊','Yego!','Byiza!','Haha 😂'];
-    var reply=replies[Math.floor(Math.random()*replies.length)];
-    var low=text.toLowerCase();
-    if(low.includes('hello')||low.includes('muraho')||low.includes('hi')) reply='Muraho! 😊 Ukomeye?';
-    else if(low.includes('kigali')) reply='Kigali ni byiza! 🇷🇼 Turahura ejo?';
-    else if(low.includes('dance')||low.includes('video')) reply='Video yawe ni 🔥🔥 Ndayikunda!';
-    else if(low.includes('love')||low.includes('nkunda')) reply='Aww ❤️ Nanjye ndagukunda!';
-    else if(low.includes('?')) reply='Yego! Byiza cyane 😊';
-    getChat(currentChat).push({who:'them',text:reply,time:'Just now'}); saveChats(); renderChat();
-    var lastEl2=document.getElementById('last-'+currentChat); if(lastEl2) lastEl2.innerText=reply;
-    addNotif('💬', currentChat+' yagushubije: "'+reply.substring(0,30)+'"','Just now');
-  },2000);
-}
-let searchHistory=[];
-try{ searchHistory=JSON.parse(localStorage.getItem('skylate_search')||'[]'); }catch(e){}
-function doSearch(q){
-  var query=q.trim().toLowerCase();
-  document.getElementById('clearSearch').style.display=query?'block':'none';
-  document.querySelectorAll('.searchTag').forEach(t=>t.classList.remove('active'));
-  var resultsDiv=document.getElementById('searchResults');
-  var def=document.getElementById('searchDefault');
-  if(!query){ resultsDiv.innerHTML=''; def.style.display='block'; return; }
-  def.style.display='none';
-  var all=document.querySelectorAll('#searchDefault .searchResult');
-  var found=[];
-  all.forEach(el=>{ var txt=(el.getAttribute('data-search')||el.innerText).toLowerCase(); if(txt.includes(query)) found.push(el); });
-  if(query.length>2 && !searchHistory.includes(query)){ searchHistory.unshift(query); searchHistory=searchHistory.slice(0,5); try{ localStorage.setItem('skylate_search',JSON.stringify(searchHistory)); }catch(e){} }
-  if(found.length===0){
-    resultsDiv.innerHTML='<div class="card" style="text-align:center;padding:30px"><div style="font-size:48px">🔍</div><h3>No results for "'+q.replace(/</g,'&lt;')+'"</h3><p style="font-size:13px;color:#888">Gerageza: Kigali, Kevin, Dance, Food, Live</p><button class="btn btn-grad" onclick="clearSearch()">Clear Search</button></div>';
-  } else {
-    var html='<div class="card"><b>✅ '+found.length+' results for "'+q.replace(/</g,'&lt;')+'"</b></div>';
-    found.forEach(el=>{ var clone=el.cloneNode(true); html+='<div class="card">'+clone.outerHTML+'</div>'; });
-    resultsDiv.innerHTML=html;
-    resultsDiv.querySelectorAll('.followBtn').forEach(b=>{ var u=b.getAttribute('data-user'); b.onclick=function(){ toggleFollow(this,u); }; if(followingSet.has(u)){ b.classList.add('following'); b.innerText='Following ✓'; } });
-  }
-}
-function quickSearch(term,el){
-  document.getElementById('mainSearch').value=term;
-  document.querySelectorAll('.searchTag').forEach(t=>t.classList.remove('active'));
-  if(el) el.classList.add('active');
-  doSearch(term);
-}
-function clearSearch(){
-  document.getElementById('mainSearch').value='';
-  document.getElementById('searchResults').innerHTML='';
-  document.getElementById('searchDefault').style.display='block';
-  document.getElementById('clearSearch').style.display='none';
-  document.querySelectorAll('.searchTag').forEach(t=>t.classList.remove('active'));
-}
-function saveSettings(){ try{ localStorage.setItem('skylate_settings', JSON.stringify(settings)); }catch(e){} }
-function updateSettingsUI(){
-  var isDark=document.body.classList.contains('dark');
-  var dt=document.getElementById('darkToggle'); if(dt) dt.classList.toggle('off', !isDark);
-  document.getElementById('darkStatus').innerText=isDark?'On - Dark theme':'Off - Light theme';
-  document.getElementById('notifToggle').classList.toggle('off', !settings.notif);
-  document.getElementById('notifStatus').innerText=settings.notif?'On - Receive all':'Off - No notifications';
-  document.getElementById('privateToggle').classList.toggle('off', !settings.private);
-  document.getElementById('privateStatus').innerText=settings.private?'On - Only followers can see':'Off - Everyone can see';
-  document.getElementById('onlineToggle').classList.toggle('off', !settings.online);
-  document.getElementById('langSelect').value=settings.lang;
-  var langNames={rw:'Kinyarwanda',en:'English',fr:'Français'};
-  document.getElementById('langStatus').innerText=langNames[settings.lang]||'Kinyarwanda';
-  updateBell();
-}
-function toggleSetting(key,el){
-  settings[key]=!settings[key];
-  el.classList.toggle('off', !settings[key]);
-  saveSettings(); updateSettingsUI();
-  if(key==='private' && settings.private) alert('🔒 Account yawe ubu ni Private!');
-  if(key==='notif' && !settings.notif) alert('🔕 Notifications zifunze!');
-  if(key==='notif' && settings.notif) addNotif('⚙️','Notifications zafunguwe!','Just now');
-}
-function changeLanguage(lang){
-  settings.lang=lang; saveSettings(); updateSettingsUI();
-  var msgs={rw:'Ururimi rwahindutse ruba Kinyarwanda! 🇷🇼',en:'Language changed to English! 🇺🇸',fr:'Langue changée en Français! 🇫🇷'};
-  alert('🌍 '+msgs[lang]);
-}
-function changePassword(){
-  if(!currentUser) return;
-  var oldP=prompt('Andika password ya kera:');
-  if(!oldP) return;
-  if(oldP!==currentUser.password){ alert('❌ Password ya kera ntabwo ariyo!'); return; }
-  var newP=prompt('Andika password nshya (min 4):');
-  if(newP && newP.length>=4){ currentUser.password=newP; users[currentUser.email]=currentUser; try{ localStorage.setItem('skylate_users',JSON.stringify(users)); }catch(e){} alert('✅ Password yahindutse!'); addNotif('🔑','Password yawe yahindutse','Just now'); }
-  else if(newP){ alert('Password igomba kuba nibura 4'); }
-}
-function exportData(){
-  alert('📥 Data yawe: \n- Name: '+(currentUser?currentUser.name:'')+'\n- Email: '+(currentUser?currentUser.email:'')+'\n- Following: '+followingSet.size+'\n- Chats: '+Object.keys(chatData).length);
-  addNotif('📥','Wasabye Download My Data','Just now');
-}
-function clearAllData(){
-  if(!confirm('⚠️ Urashaka gusiba BYOSE? Ibi ntibisubirana!')) return;
-  try{ localStorage.removeItem('skylate_following'); localStorage.removeItem('skylate_chats'); localStorage.removeItem('skylate_photo'); localStorage.removeItem('skylate_bio'); localStorage.removeItem('skylate_settings'); localStorage.removeItem('comments-1'); localStorage.removeItem('comments-2'); }catch(e){}
-  alert('🗑️ Byose byasibwe! Page irongera gutangira...');
-  location.reload();
-}
-function logoutUser(){
-  if(confirm('Urashaka gusohoka muri SKYLATE?\nLogged in as '+(currentUser?currentUser.email:''))){
-    try{ localStorage.removeItem('skylate_session'); sessionStorage.removeItem('skylate_session'); }catch(e){}
-    currentUser=null;
-    document.getElementById('loginEmail').value='';
-    document.getElementById('loginPassword').value='';
-    showLogin();
-    alert('👋 Murabeho! Urakoze gukoresha SKYLATE!');
-  }
-}
-window.addEventListener('load',()=>{
-  checkSession();
-  applyPhoto();
-  try{ var bio=localStorage.getItem('skylate_bio'); if(bio){ document.getElementById('myBio').innerHTML=bio+' <span style="cursor:pointer" onclick="editBio()">✏️</span>'; document.getElementById('bioSettings').innerText=bio; } }catch(e){}
-  updateFollowUI(); updateSettingsUI();
-  Object.keys(chatData).forEach(name=>{ var msgs=chatData[name]; if(msgs.length){ var last=msgs[msgs.length-1]; var el=document.getElementById('last-'+name); if(el) el.innerText=(last.who==='me'?'You: ':'')+last.text; } });
-  [1,2].forEach(id=>{ try{ var saved=JSON.parse(localStorage.getItem('comments-'+id)||'[]'); var list=document.getElementById('commentList-'+id); saved.forEach(t=>{ var row=document.createElement('div'); row.className='commentRow'; row.innerHTML='<img src="'+myPhoto+'"><div class="commentBubble"><b>You ('+(currentUser?currentUser.name:'Aline U.')+')</b><br>'+t+'</div>'; list.appendChild(row); var cc=document.getElementById('commentCount-'+id); cc.innerText=parseInt(cc.innerText)+1; }); }catch(e){} });
-});
-document.addEventListener('keydown',e=>{ if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='s'){ e.preventDefault(); document.getElementById('ownerLogin').classList.remove('hidden'); window.scrollTo(0,document.body.scrollHeight); }});
+// ================================================
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
+let currentUser=null, selectedMedia=null, selectedMediaType=null, selectedFile=null;
+function showErr(m){ var e=document.getElementById('authError'); e.innerText=m; e.style.display='block'; }
+function showOk(m){ var e=document.getElementById('authOk'); e.innerText=m; e.style.display='block'; document.getElementById('authError').style.display='none'; }
+function switchAuth(mode){ document.getElementById('tabLogin').style.background=mode==='login'?'#fff':'transparent'; document.getElementById('tabLogin').style.color=mode==='login'?'#2563eb':'#888'; document.getElementById('tabSignup').style.background=mode==='signup'?'#fff':'transparent'; document.getElementById('tabSignup').style.color=mode==='signup'?'#2563eb':'#888'; document.getElementById('loginForm').classList.toggle('hidden',mode!=='login'); document.getElementById('signupForm').classList.toggle('hidden',mode!=='signup'); }
+async function doSignup(){ var name=document.getElementById('signupName').value.trim(), email=document.getElementById('signupEmail').value.trim(), pass=document.getElementById('signupPassword').value; if(!name||!email||!pass) return showErr('⚠️ Uzuza byose!'); try{ var cred=await auth.createUserWithEmailAndPassword(email,pass); await cred.user.updateProfile({displayName:name}); await db.collection('users').doc(cred.user.uid).set({name:name,email:email,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); showOk('✅ Account yakozwe!'); }catch(e){ showErr('❌ '+e.message); } }
+async function doLogin(){ var email=document.getElementById('loginEmail').value.trim(), pass=document.getElementById('loginPassword').value; try{ await auth.signInWithEmailAndPassword(email,pass); }catch(e){ showErr('❌ '+e.message); } }
+async function forgotPassword(){ var email=prompt('Andika Email yawe:'); if(!email) return; try{ await auth.sendPasswordResetEmail(email); alert('✅ Email yo guhindura password yoherejwe kuri '+email); }catch(e){ alert('❌ '+e.message); } }
+async function logoutUser(){ await auth.signOut(); }
+function applyUser(){ if(!currentUser) return; document.querySelectorAll('.userNameTxt').forEach(el=>el.innerText=currentUser.displayName||currentUser.email.split('@')[0]); document.querySelectorAll('.userEmailTxt').forEach(el=>el.innerText=currentUser.email); }
+auth.onAuthStateChanged(user=>{ currentUser=user; if(user){ applyUser(); document.getElementById('loginScreen').style.display='none'; document.getElementById('appWrap').classList.remove('hidden'); listenPosts(); } else { document.getElementById('loginScreen').style.display='flex'; document.getElementById('appWrap').classList.add('hidden'); } });
+function showTab(id,btn){ ['social','videos','create','profile','settings'].forEach(x=>document.getElementById(x).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); window.scrollTo(0,0); }
+function previewFile(input){ if(input.files&&input.files[0]){ selectedFile=input.files[0]; var isVideo=selectedFile.type.startsWith('video'); selectedMediaType=isVideo?'video':'photo'; var reader=new FileReader(); reader.onload=e=>{ selectedMedia=e.target.result; var img=document.getElementById('previewImg'), vid=document.getElementById('previewVideo'); if(isVideo){ img.classList.add('hidden'); vid.classList.remove('hidden'); vid.src=selectedMedia; } else { vid.classList.add('hidden'); img.classList.remove('hidden'); img.src=selectedMedia; } }; reader.readAsDataURL(selectedFile); } }
+function clearCreate(){ selectedMedia=null; selectedFile=null; document.getElementById('previewImg').classList.add('hidden'); document.getElementById('previewVideo').classList.add('hidden'); document.getElementById('postCaption').value=''; }
+async function publishPost(){ var caption=document.getElementById('postCaption').value.trim(); if(!selectedFile && !caption){ alert('⚠️ Hitamo Photo/Video cyangwa andika Caption!'); return; } var btn=document.getElementById('publishBtn'); btn.innerText='⏳ Uploading...'; btn.disabled=true; try{ var mediaUrl='', mediaType=selectedMediaType||'text'; if(selectedFile){ document.getElementById('uploadProgress').classList.remove('hidden'); var ref=storage.ref('posts/'+Date.now()+'_'+selectedFile.name); var task=ref.put(selectedFile); task.on('state_changed', snap=>{ var pct=Math.round(snap.bytesTransferred/snap.totalBytes*100); document.getElementById('uploadPct').innerText=pct+'%'; }); await task; mediaUrl=await ref.getDownloadURL(); } await db.collection('posts').add({user: currentUser.displayName||currentUser.email.split('@')[0], email: currentUser.email, uid: currentUser.uid, caption: caption||'New post on SKYLATE! ❤️', mediaUrl: mediaUrl, mediaType: mediaType, audience: document.getElementById('postAudience').value, likes: 0, likedBy: [], createdAt: firebase.firestore.FieldValue.serverTimestamp()}); alert('✅ Post yashyizwe! Buri muntu ku isi arabibona ubu! 🌍'); clearCreate(); document.getElementById('uploadProgress').classList.add('hidden'); showTab('social',null); }catch(e){ alert('❌ '+e.message+'\n\nNiba ari Permission denied, jya muri Firebase > Firestore > Rules > Shyiraho test mode'); } btn.innerText='Post to SKYLATE 🚀 - Buri muntu abibona!'; btn.disabled=false; }
+function listenPosts(){ db.collection('posts').orderBy('createdAt','desc').limit(50).onSnapshot(snapshot=>{ var feed=document.getElementById('feedPosts'); var vfeed=document.getElementById('videosFeed'); var grid=document.getElementById('myPostsGrid'); feed.innerHTML=''; vfeed.innerHTML=''; grid.innerHTML=''; var myCount=0; document.getElementById('globalStats').innerText=snapshot.size+' posts from all over the world 🌍'; snapshot.forEach(doc=>{ var p=doc.data(); var id=doc.id; var time=p.createdAt?new Date(p.createdAt.toDate()).toLocaleString():'Just now'; var isMine=p.uid===currentUser.uid; if(isMine) myCount++; var mediaHtml=''; if(p.mediaUrl){ if(p.mediaType==='video') mediaHtml='<video class="post" controls playsinline src="'+p.mediaUrl+'"></video>'; else mediaHtml='<img class="post" src="'+p.mediaUrl+'">'; } var liked=p.likedBy && p.likedBy.includes(currentUser.uid); var div=document.createElement('div'); div.className='card'; div.innerHTML='<div class="flex"><img class="av" src="https://i.pravatar.cc/100?img=47"><div style="flex:1"><b>'+p.user+'</b> '+(isMine?'<span class="newBadge">YOU</span>':'')+'<br><span style="font-size:12px;color:#888">'+time+' • 🌍 '+p.audience+'</span></div></div>'+mediaHtml+'<p>'+(p.caption||'').replace(/</g,'&lt;')+'</p><div class="flex" style="gap:14px"><button class="actionBtn '+(liked?'liked':'')+'" onclick="likePost(\''+id+'\')">❤️ '+(p.likes||0)+'</button><button class="actionBtn" onclick="alert(\'💬 Comment - vuba!\')">💬 Comment</button>'+(isMine?'<button class="actionBtn" onclick="deletePost(\''+id+'\')">🗑️ Delete</button>':'')+'</div>'; feed.appendChild(div); if(p.mediaType==='video' && p.mediaUrl){ var v=document.createElement('div'); v.className='videoCard'; v.innerHTML='<video controls playsinline src="'+p.mediaUrl+'"></video><div class="ov"><b>@'+p.user+'</b><br>'+(p.caption||'')+'</div>'; vfeed.appendChild(v); } if(isMine && p.mediaUrl && p.mediaType!=='video'){ var im=document.createElement('img'); im.src=p.mediaUrl; im.style.cssText='width:100%;height:110px;object-fit:cover;border-radius:10px'; grid.appendChild(im); } }); document.getElementById('myPostsCount').innerText=myCount; }); }
+async function likePost(id){ var ref=db.collection('posts').doc(id); var doc=await ref.get(); var data=doc.data(); var arr=data.likedBy||[]; if(arr.includes(currentUser.uid)){ arr=arr.filter(u=>u!==currentUser.uid); } else { arr.push(currentUser.uid); } await ref.update({likedBy:arr, likes:arr.length}); }
+async function deletePost(id){ if(!confirm('Urashaka gusiba iyi post?')) return; await db.collection('posts').doc(id).delete(); alert('🗑️ Post yasibwe'); }
 </script>
 </body>
 </html>
