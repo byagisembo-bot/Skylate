@@ -9,7 +9,7 @@
   body{margin:0;background:#f0f2f5;padding:12px}
   .card{background:#fff;border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
   .top{display:flex;justify-content:space-between;align-items:center}
-  .logo{font-weight:900;font-size:22px;letter-spacing:1px}
+  .logo{font-weight:900;font-size:22px}
   .logo span{color:#6a00ff}
   input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin:8px 0;font-size:15px}
   textarea{min-height:80px;resize:none}
@@ -26,133 +26,100 @@
   .hidden{display:none!important}
   .stat{background:#f7f7ff;border-radius:12px;padding:12px;text-align:center;flex:1}
   .stat b{font-size:20px}
-  #ownerLogin{border:2px solid #111}
   .secret-top{background:#111;color:#fff;border-radius:14px;padding:16px}
 </style>
 </head>
 <body>
 
-<!-- ============ 1. USER VIEW - SKYLATE NORMAL ============ -->
+<!-- ===== USER VIEW ===== -->
 <div id="userView">
-  <div class="card top">
-    <div class="logo">SKY<span>LATE</span></div>
-    <div class="badge">🌍 Global • All Countries</div>
-  </div>
+  <div class="card top"><div class="logo">SKY<span>LATE</span></div><div class="badge">🌍 Global • All Countries</div></div>
 
   <div class="card">
     <h3>🔒 Require permission to post others</h3>
-    <p class="small">Control who can post content on behalf of others without permission. Blocked and flagged for review.</p>
-    <div class="flex">
-      <img src="https://i.pravatar.cc/100?img=12">
-      <div>
-        <b>Unauthorized Post by Nina M.</b><br>
-        <span class="small">Reposted without consent • flagged by system<br>Flagged: Nov 18, 2024 • 54 views</span>
-      </div>
-    </div>
-    <div class="row" style="margin-top:10px">
-      <button class="btn" style="background:#22c55e;color:#fff">Approve</button>
-      <button class="btn btn-red">Reject</button>
-    </div>
+    <p class="small">Control who can post content on behalf of others without permission.</p>
+    <div class="flex"><img src="https://i.pravatar.cc/100?img=12"><div><b>Unauthorized Post by Nina M.</b><br><span class="small">Reposted without consent • flagged by system</span></div></div>
   </div>
 
-  <!-- ============ 2. SKYLATE REPORT ALL FORM ============ -->
+  <!-- ===== REPORT FORM ===== -->
   <div class="card">
     <h2>🚩 SKYLATE Report All</h2>
-    <p class="small">Report someone for bad behavior - Reports are confidential</p>
-
+    <p class="small">Report someone for bad behavior - Confidential</p>
     <label><b>Who are you reporting?</b></label>
     <select id="reportUser">
-      <option value="">Select user to report...</option>
-      <option>Nina M.</option>
-      <option>Kevin R.</option>
-      <option>Eric T.</option>
-      <option>Aline U.</option>
-      <option>Other...</option>
+      <option value="">Select user...</option>
+      <option>Nina M.</option><option>Kevin R.</option><option>Eric T.</option><option>Aline U.</option><option>Other...</option>
     </select>
-
-    <label><b>Reason for report:</b></label>
+    <label><b>Reason:</b></label>
     <div class="check"><input type="checkbox" id="r1"> Harassment / Bullying</div>
     <div class="check"><input type="checkbox" id="r2"> Hateful content</div>
     <div class="check"><input type="checkbox" id="r3"> Spam / Scam</div>
     <div class="check"><input type="checkbox" id="r4"> Copyright / Stole my photo</div>
     <div class="check"><input type="checkbox" id="r5"> Other bad behavior</div>
-
     <label><b>Describe what happened...</b></label>
     <textarea id="reportDetails" placeholder="Andika ibyabaye neza..."></textarea>
-
-    <label><b>Proof (optional - link / screenshot)</b></label>
-    <input type="text" id="reportProof" placeholder="Paste link or describe proof">
-
-    <!-- ANONYMOUS OPTION -->
+    <label><b>Proof (optional)</b></label>
+    <input type="text" id="reportProof" placeholder="Paste link">
     <div class="card" style="background:#f0fff4;border:1px solid #22c55e">
-      <div class="check">
-        <input type="checkbox" id="anonymous" checked>
-        <b>🕵️ Submit anonymously</b>
-      </div>
-      <p class="small" style="margin:0">Your identity will be hidden - SKYLATE will not share who reported. Nta muntu uzamenya ko ari wowe.</p>
+      <div class="check"><input type="checkbox" id="anonymous" checked><b>🕵️ Submit anonymously</b></div>
+      <p class="small" style="margin:0">Your identity will be hidden - Nta muntu uzamenya ko ari wowe.</p>
     </div>
-
-    <div class="row">
-      <button class="btn btn-grey" onclick="clearReport()">Cancel</button>
-      <button class="btn btn-red" onclick="submitReport()">Submit Report to SKYLATE</button>
-    </div>
+    <div class="row"><button class="btn btn-grey" onclick="clearReport()">Cancel</button><button class="btn btn-red" id="submitBtn" onclick="submitReport()">Submit Report to SKYLATE</button></div>
     <p id="reportMsg" style="text-align:center;font-weight:800;color:green"></p>
   </div>
-
   <p style="text-align:center" class="small">SKYLATE • Made for the world 🌍</p>
 </div>
 
-<!-- ============ 3. SECRET OWNER LOGIN - HIDDEN ============ -->
+<!-- ===== SECRET OWNER LOGIN ===== -->
 <div id="ownerLogin" class="card hidden">
   <h2>🔒 SKYLATE - Secret Access</h2>
   <p class="small">Owner Only - Nta muntu wundi ubizi</p>
-  <label>Secret Username</label>
-  <input type="text" id="ownerUsername" placeholder="Owner username">
-  <label>Secret Password</label>
-  <input type="password" id="ownerPassword" placeholder="••••••••">
+  <input type="text" id="ownerUsername" placeholder="Secret Username">
+  <input type="password" id="ownerPassword" placeholder="Secret Password">
   <button class="btn btn-dark" onclick="ownerLogin()">Enter Secret Dashboard</button>
   <p id="ownerError" style="color:red;text-align:center"></p>
 </div>
 
-<!-- ============ 4. SECRET OWNER DASHBOARD - OWNER WENYINE ============ -->
+<!-- ===== SECRET OWNER DASHBOARD ===== -->
 <div id="ownerDashboard" class="hidden">
-  <div class="secret-top">
-    <h2 style="margin:0">🔐 Secret Overview</h2>
-    <p style="margin:4px 0 0">All Reports, Copyrights & Flagged Posts</p>
-    <p style="margin:8px 0 0"><span class="badge">Private • Owner Only • Hidden from users</span></p>
-  </div>
-
-  <div class="card">
-    <div class="row">
-      <div class="stat"><span class="small">Total Reports</span><br><b id="statReports">0</b></div>
-      <div class="stat"><span class="small">Copyright Claims</span><br><b id="statCopyright">0</b></div>
-      <div class="stat"><span class="small">Flagged Posts</span><br><b id="statFlagged">3</b></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>📥 Recent Secret Reports</h3>
-    <div id="reportsList"><p class="small">Nta report irageza...</p></div>
-  </div>
-
-  <div class="card">
-    <h3>⚠️ Flagged Posts - Only Owner Sees</h3>
-    <p><b>Unauthorized Post by Nina M.</b> - Reposted without consent <button class="btn" style="background:#22c55e;color:#fff;width:auto;padding:8px 14px">Approve</button> <button class="btn btn-red" style="width:auto;padding:8px 14px">Reject</button></p>
-    <p><b>Unauthorized Post by Eric T.</b> - Shared other's content without credit <button class="btn" style="background:#22c55e;color:#fff;width:auto;padding:8px 14px">Approve</button> <button class="btn btn-red" style="width:auto;padding:8px 14px">Reject</button></p>
-  </div>
-
+  <div class="secret-top"><h2 style="margin:0">🔐 Secret Overview</h2><p style="margin:4px 0 0">All Reports, Copyrights & Flagged Posts</p><p style="margin:8px 0 0"><span class="badge">Private • Owner Only • Hidden from users</span></p></div>
+  <div class="card"><div class="row">
+    <div class="stat"><span class="small">Total Reports</span><br><b id="statReports">0</b></div>
+    <div class="stat"><span class="small">Copyright</span><br><b id="statCopyright">0</b></div>
+    <div class="stat"><span class="small">Anonymous</span><br><b id="statAnon">0</b></div>
+  </div></div>
+  <div class="card"><h3>📥 Live Reports from Firebase</h3><div id="reportsList"><p class="small">Loading...</p></div></div>
   <button class="btn btn-grey" onclick="ownerLogout()">Logout Secret Dashboard</button>
 </div>
 
-<script>
-// ================= CONFIG - HINDURA IBI BIKUBEWE =================
-const OWNER_USERNAME = "skylate_boss_2026"; // <- Hindura username yawe
-const OWNER_PASSWORD = "Skylate@Secret!2026"; // <- Hindura password yawe
+<!-- ===== FIREBASE SDK ===== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// ================= REPORT LOGIC =================
-let reports = JSON.parse(localStorage.getItem("skylate_reports") || "[]");
+// ================= 1. SHYIRAMO CONFIG YAWE HANO =================
+// Genda: console.firebase.google.com -> Create Project -> Web App -> Copy config
+const firebaseConfig = {
+  apiKey: "SHYIRAMO_API_KEY_YAWE_HANO",
+  authDomain: "skylate-app.firebaseapp.com",
+  projectId: "skylate-app",
+  storageBucket: "skylate-app.appspot.com",
+  messagingSenderId: "000000000000",
+  appId: "1:000000000000:web:xxxxxxxx"
+};
 
-function submitReport(){
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+// ================= 2. OWNER CREDENTIALS - FIREBASE AUTH =================
+// Kora user muri Firebase Console -> Authentication -> Add User
+// Email: owner@skylate.secret | Password: Iyawe bwite
+const OWNER_EMAIL = "owner@skylate.secret"; // <- Email ya Owner muri Firebase Auth
+
+// ================= 3. SUBMIT REPORT -> FIREBASE =================
+window.submitReport = async () => {
   const user = document.getElementById("reportUser").value;
   const details = document.getElementById("reportDetails").value;
   const anon = document.getElementById("anonymous").checked;
@@ -166,83 +133,112 @@ function submitReport(){
   if(document.getElementById("r4").checked) reasons.push("Copyright");
   if(document.getElementById("r5").checked) reasons.push("Other");
 
-  const report = {
-    id: "#"+Math.floor(1000+Math.random()*9000),
-    user, reasons: reasons.join(", ") || "Not specified",
-    details, proof: document.getElementById("reportProof").value,
-    anonymous: anon ? "Anonymous 🕵️" : "Not Anonymous",
-    time: new Date().toLocaleString(),
-    status: "Investigating"
-  };
-  reports.unshift(report);
-  localStorage.setItem("skylate_reports", JSON.stringify(reports));
-  document.getElementById("reportMsg").innerText = "✅ Report yoherejwe! Murakoze - SKYLATE izabikurikirana mwibanga.";
-  clearReport();
-}
+  const btn = document.getElementById("submitBtn");
+  btn.innerText = "Sending..."; btn.disabled = true;
 
-function clearReport(){
+  try {
+    await addDoc(collection(db, "skylate_reports"), {
+      reportedUser: user,
+      reasons: reasons.join(", ") || "Not specified",
+      details,
+      proof: document.getElementById("reportProof").value || "",
+      anonymous: anon,
+      reporter: anon ? "Anonymous 🕵️" : "Not Anonymous - Hidden",
+      status: "Investigating",
+      createdAt: serverTimestamp()
+    });
+    document.getElementById("reportMsg").innerText = "✅ Report yoherejwe kuri server! Murakoze.";
+    clearReport();
+  } catch(e){
+    alert("Error: " + e.message);
+  }
+  btn.innerText = "Submit Report to SKYLATE"; btn.disabled = false;
+};
+
+window.clearReport = () => {
   document.getElementById("reportUser").value="";
   document.getElementById("reportDetails").value="";
   document.getElementById("reportProof").value="";
-}
+};
 
-// ================= SECRET OWNER ACCESS =================
-// Fungura login: Ctrl + Shift + S
+// ================= 4. SECRET OWNER LOGIN =================
 document.addEventListener("keydown", (e)=>{
   if(e.ctrlKey && e.shiftKey && e.key.toLowerCase()==="s"){
     e.preventDefault();
     document.getElementById("userView").classList.add("hidden");
     document.getElementById("ownerDashboard").classList.add("hidden");
     document.getElementById("ownerLogin").classList.remove("hidden");
-    window.scrollTo(0,0);
   }
 });
 
-function ownerLogin(){
-  const u = document.getElementById("ownerUsername").value.trim();
-  const p = document.getElementById("ownerPassword").value;
-  if(u === OWNER_USERNAME && p === OWNER_PASSWORD){
-    sessionStorage.setItem("skylate_owner","true");
+window.ownerLogin = async () => {
+  const username = document.getElementById("ownerUsername").value.trim();
+  const password = document.getElementById("ownerPassword").value;
+  // Username uyihindura mo Email ya Firebase
+  // Niba username ari "skylate_boss" -> ihinduke owner@skylate.secret
+  const email = username.includes("@") ? username : OWNER_EMAIL;
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
     showDashboard();
-  } else {
-    document.getElementById("ownerError").innerText = "❌ Access Denied - Wrong credentials";
+  } catch(e){
+    document.getElementById("ownerError").innerText = "❌ Access Denied - " + e.message;
   }
-}
+};
+
+window.ownerLogout = async () => {
+  await signOut(auth);
+  document.getElementById("ownerDashboard").classList.add("hidden");
+  document.getElementById("userView").classList.remove("hidden");
+};
 
 function showDashboard(){
   document.getElementById("userView").classList.add("hidden");
   document.getElementById("ownerLogin").classList.add("hidden");
   document.getElementById("ownerDashboard").classList.remove("hidden");
-  // Update stats
-  document.getElementById("statReports").innerText = reports.length;
-  document.getElementById("statCopyright").innerText = reports.filter(r=>r.reasons.includes("Copyright")).length;
-  // List reports
-  const list = document.getElementById("reportsList");
-  if(reports.length===0){ list.innerHTML="<p class='small'>Nta report irageza...</p>"; return; }
-  list.innerHTML = reports.map(r=>`
-    <div style="border-bottom:1px solid #eee;padding:10px 0">
-      <b>Report ${r.id} - ${r.user}</b><br>
-      <span class="small">${r.reasons} • ${r.anonymous} • ${r.time}</span><br>
-      ${r.details}<br>
-      <span class="small">Proof: ${r.proof||"Nta proof"} • Status: ${r.status}</span><br>
-      <button onclick="deleteReport('${r.id}')" style="margin-top:6px;padding:6px 10px;border:none;border-radius:8px;background:#eee;cursor:pointer">Delete</button>
-    </div>`).join("");
+  listenReports();
 }
 
-function deleteReport(id){
-  reports = reports.filter(r=>r.id!==id);
-  localStorage.setItem("skylate_reports", JSON.stringify(reports));
-  showDashboard();
+// ================= 5. LIVE REPORTS - OWNER WENYINE =================
+let unsub = null;
+function listenReports(){
+  if(unsub) return;
+  const q = query(collection(db, "skylate_reports"), orderBy("createdAt","desc"));
+  unsub = onSnapshot(q, (snap)=>{
+    const list = document.getElementById("reportsList");
+    document.getElementById("statReports").innerText = snap.size;
+    let copyright = 0, anonCount = 0;
+    snap.forEach(d=>{ const r=d.data(); if(r.reasons.includes("Copyright")) copyright++; if(r.anonymous) anonCount++; });
+    document.getElementById("statCopyright").innerText = copyright;
+    document.getElementById("statAnon").innerText = anonCount;
+
+    if(snap.empty){ list.innerHTML="<p class='small'>Nta report irageza...</p>"; return; }
+    list.innerHTML = "";
+    snap.forEach(d=>{
+      const r = d.data();
+      const div = document.createElement("div");
+      div.style.cssText="border-bottom:1px solid #eee;padding:10px 0";
+      div.innerHTML = `
+        <b>Report - ${r.reportedUser}</b><br>
+        <span class="small">${r.reasons} • ${r.reporter} • ${r.status}</span><br>
+        ${r.details}<br>
+        <span class="small">Proof: ${r.proof||"Nta proof"}</span><br>
+        <button style="margin-top:6px;padding:6px 12px;border:none;border-radius:8px;background:#fee;cursor:pointer" onclick="deleteReport('${d.id}')">Delete</button>
+        <button style="margin-top:6px;padding:6px 12px;border:none;border-radius:8px;background:#e8ffe8;cursor:pointer" onclick="alert('Marked Resolved')">Mark Resolved</button>
+      `;
+      list.appendChild(div);
+    });
+  });
 }
 
-function ownerLogout(){
-  sessionStorage.removeItem("skylate_owner");
-  document.getElementById("ownerDashboard").classList.add("hidden");
-  document.getElementById("userView").classList.remove("hidden");
-}
+window.deleteReport = async (id) => {
+  if(!confirm("Delete this report?")) return;
+  await deleteDoc(doc(db, "skylate_reports", id));
+};
 
-// Auto-login if already logged in
-if(sessionStorage.getItem("skylate_owner")==="true"){ showDashboard(); }
+// Auto-check if Owner already logged in
+onAuthStateChanged(auth, (user)=>{
+  if(user && user.email === OWNER_EMAIL){ showDashboard(); }
+});
 </script>
 </body>
 </html>
